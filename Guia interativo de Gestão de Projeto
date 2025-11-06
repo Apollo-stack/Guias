@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Interativo de Gestão de Projetos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-header.active + .accordion-content {
+            max-height: 1000px; 
+        }
+        .main-nav-card.active {
+            box-shadow: 0 0 0 3px #4f46e5; 
+            transform: translateY(-2px);
+        }
+        .sub-nav-button.active {
+            background-color: #4f46e5;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="bg-stone-100 text-stone-800">
+
+    <!-- Chosen Palette: Warm Stone & Indigo -->
+    <!-- Application Structure Plan: A estrutura da SPA é temática, abandonando a lista linear do markdown. O objetivo é a síntese e comparação, facilitando o aprendizado. A navegação é em dois níveis: 1) Três temas principais (Processos, Riscos, Pessoas) apresentados como cartões interativos. 2) Um menu de sub-navegação (abas) para as ferramentas específicas de cada tema (ex: Kanban, Scrum). O conteúdo de cada ferramenta é apresentado em um componente "accordion" (O que é, Por que usar, Como usar) para evitar sobrecarga de informação e incentivar a exploração. Esta arquitetura baseada em tarefas (gestão de processos, gestão de riscos) é mais intuitiva para um gestor do que uma simples enciclopédia. -->
+    <!-- Visualization & Content Choices: 
+        - Kanban: Report Info -> 'Como Usar' -> Goal: Demonstrar o fluxo visual -> Viz: Diagrama de 3 colunas (To Do, Doing, Done) feito com HTML/Tailwind. Interaction: Parte da UI interativa. Justification: Mais claro que texto. Method: HTML/Tailwind.
+        - Scrum: Report Info -> 'Como Usar' / Ritos -> Goal: Mostrar o ciclo do Scrum -> Viz: Diagrama de fluxo simples (Planning -> Daily -> Review -> Retro) -> Interaction: N/A. Justification: Visualiza o processo. Method: HTML/Tailwind (flexbox e setas unicode).
+        - Matriz GUT: Report Info -> 'Como Usar' -> Goal: Explicar a matriz -> Viz: Tabela HTML estilizada com exemplo. Interaction: N/A. Justification: Formato de dados tabular. Method: HTML/Tailwind Table.
+        - Curva do Pânico: Report Info -> 'Como Usar' -> Goal: Explicar o conceito gráfico -> Viz: Diagrama conceitual de um gráfico (eixos X/Y, linha de limite, curva de pânico) feito com HTML/CSS. Interaction: N/A. Justification: Evita libs de gráfico desnecessárias para um conceito, segue regra de "structured HTML". Method: HTML/Tailwind.
+        - Go / No Go: Report Info -> 'Como Usar' -> Goal: Mostrar o fluxo de decisão -> Viz: Diagrama de decisão simples (Decisão -> Caminho Go / Caminho No Go). Interaction: N/A. Justification: Visualiza o "portão" de decisão. Method: HTML/Tailwind (flexbox).
+        - Comunicação: Report Info -> 'Como Usar' / Público -> Goal: Mostrar o fluxo de adaptação da mensagem -> Viz: Diagrama (Público -> Análise -> Mensagem). Interaction: N/A. Justification: Simplifica o conceito. Method: HTML/Tailwind.
+        - Conflitos: Report Info -> 'Como Usar' / Estratégias -> Goal: Mostrar os passos da gestão -> Viz: Diagrama de 3 passos (Ouvir -> Focar no Problema -> Usar Estratégia). Interaction: N/A. Justification: Reforça o processo. Method: HTML/Tailwind.
+        - Todo o Texto: Report Info -> Conteúdo -> Goal: Apresentar conteúdo de forma explorável -> Viz: Accordion interativo. Interaction: Click to expand/collapse. Justification: Evita "parede de texto". Method: HTML/JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <div class="max-w-6xl mx-auto p-4 md:p-8">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-indigo-700 mb-3">Guia Interativo de Gestão</h1>
+            <p class="text-lg text-stone-600 max-w-3xl mx-auto">Um "playbook" prático para gerenciar seus projetos. Navegue pelos temas para explorar as ferramentas e entender quando, por que e como usá-las.</p>
+        </header>
+
+        <!-- Navegação Principal (Temas) -->
+        <nav class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12" id="main-nav">
+            <button class="main-nav-card bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 text-left" onclick="showSection('processos')" data-section="processos">
+                <span class="text-3xl">⚙️</span>
+                <h2 class="text-2xl font-bold text-indigo-700 mt-3 mb-2">Gestão de Processos</h2>
+                <p class="text-stone-600">Ferramentas para organizar o fluxo de trabalho, entregas e o ciclo de desenvolvimento.</p>
+            </button>
+            <button class="main-nav-card bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 text-left" onclick="showSection('riscos')" data-section="riscos">
+                <span class="text-3xl">🚦</span>
+                <h2 class="text-2xl font-bold text-indigo-700 mt-3 mb-2">Gestão de Riscos e Decisões</h2>
+                <p class="text-stone-600">Métodos para priorizar problemas, monitorar incertezas e tomar decisões críticas.</p>
+            </button>
+            <button class="main-nav-card bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 text-left" onclick="showSection('pessoas')" data-section="pessoas">
+                <span class="text-3xl">👥</span>
+                <h2 class="text-2xl font-bold text-indigo-700 mt-3 mb-2">Gestão de Pessoas</h2>
+                <p class="text-stone-600">Estratégias para comunicação eficaz, alinhamento de expectativas e resolução de conflitos.</p>
+            </button>
+        </nav>
+
+        <!-- Conteúdo Dinâmico -->
+        <main id="content-area">
+
+            <!-- Seção 1: Gestão de Processos -->
+            <section id="section-processos" class="main-section hidden">
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <nav class="flex flex-wrap gap-3 mb-6 border-b border-stone-200 pb-4" role="tablist">
+                        <button class="sub-nav-button text-stone-600 font-medium py-2 px-4 rounded-lg hover:bg-stone-200 transition-colors" onclick="showTool('processos', 'kanban')" data-tool="kanban">Kanban</button>
+                        <button class="sub-nav-button text-stone-600 font-medium py-2 px-4 rounded-lg hover:bg-stone-200 transition-colors" onclick="showTool('processos', 'scrum')" data-tool="scrum">Scrum</button>
+                    </nav>
+                    
+                    <!-- Ferramenta: Kanban -->
+                    <div id="tool-kanban" class="tool-content hidden">
+                        <h3 class="text-3xl font-bold mb-4">Kanban</h3>
+                        <p class="text-lg text-stone-600 mb-6">Um método de gestão visual para controlar o fluxo de trabalho, limitando tarefas em andamento para focar na entrega contínua.</p>
+                        
+                        <div class="accordion">
+                            <div class="accordion-item border-b border-stone-200">
+                                <button class="accordion-header w-full flex justify-between items-center py-4 text-left">
+                                    <span class="text-xl font-semibold text-indigo-700">O que é?</span>
+                                    <span class="icon text-2xl text-indigo-700">+</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p class="pt-2 pb-4 text-stone-700">Um método de gestão visual para controlar o fluxo de trabalho. Pense nele como um "quadro de tarefas vivo" que mostra onde está cada atividade.</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-b border-stone-200">
+                                <button class="accordion-header w-full flex justify-between items-center py-4 text-left">
+                                    <span class="text-xl font-semibold text-indigo-700">Quando e Por Que Usar?</span>
+                                    <span class="icon text-2xl text-indigo-700">+</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <ul class="list-disc list-inside pt-2 pb-4 text-stone-700 space-y-2">
+                                        <li><strong>Quando:</strong> Ideal para fluxos de trabalho contínuos, onde as tarefas chegam de forma constante (ex: equipes de suporte, manutenção, ou atividades do dia a dia).</li>
+                                        <li><strong>Quando:</strong> Quando a visualização do processo e a identificação de gargalos são mais importantes do que ciclos fixos de entrega.</li>
+                                        <li><strong>Por Quê:</strong> Para dar visibilidade total ao time, limitar a sobrecarga de trabalho e promover um ritmo sustentável.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-b border-stone-200">
+                                <button class="accordion-header w-full flex justify-between items-center py-4 text-left">
+                                    <span class="text-xl font-semibold text-indigo-700">Como Usar? (Visualização)</span>
+                                    <span class="icon text-2xl text-indigo-700">+</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <div class="pt-2 pb-4">
+                                        <p class="text-stone-700 mb-4">A ideia central é um quadro simples. A regra de ouro é limitar o "Trabalho em Progresso" (WIP) na coluna 'Fazendo' para forçar a equipe a terminar tarefas antes de começar novas.</p>
+                                        <div class="flex flex-col md:flex-row gap-4 p-4 bg-stone-50 rounded-lg border border-stone-200">
+                                            <div class="flex-1 bg-stone-200 p-4 rounded-lg">
+                                                <h4 class="font-bold text-center mb-3">A Fazer (To Do)</h4>
+                                                <div class="bg-white p-3 rounded shadow mb-3">Tarefa 3</div>
+                                                <div class="bg-white p-3 rounded shadow">Tarefa 4</div>
+                                            </div>
+                                            <div class="flex-1 bg-stone-200 p-4 rounded-lg">
+                                                <h4 class="font-bold text-center mb-3">Fazendo (WIP: 2)</h4>
+                                                <div class="bg-white p-3 rounded shadow mb-3">Tarefa 1</div>
+                                                <div class="bg-white p-3 rounded shadow">Tarefa 2</div>
+                                            </div>
+                                            <div class="flex-1 bg-stone-200 p-4 rounded-lg">
+                                                <h4 class="font-bold text-center mb-3">Feito (Done)</h4>
+                                                <div class="bg-white p-3 rounded shadow opacity-70">Tarefa 0</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ferramenta: Scrum -->
+                    <div id="tool-scrum" class="tool-content hidden">
+                        <h3 class="text-3xl font-bold mb-4">Scrum</h3>
+                        <p class="text-lg text-stone-600 mb-6">Um framework de gestão para projetos complexos, focado em ciclos de entrega de valor chamados *Sprints*.</p>
+                        
+                        <div class="accordion">
+                            <div class="accordion-item border-b border-stone-200">
+                                <button class="accordion-header w-full flex justify-between items-center py-4 text-left">
+                                    <span class="text-xl font-semibold text-indigo-700">O que é?</span>
+                                    <span class="icon text-2xl text-indigo-700">+</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p class="pt-2 pb-4 text-stone-700">Um framework de gestão para projetos complexos. Ele não gerencia o fluxo (como o Kanban), mas sim ciclos de entrega de valor chamados *Sprints* (geralmente de 2 semanas).</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-b border-stone-200">
+                                <button class="accordion-header w-full flex justify-between items-center py-4 text-left">
+                                    <span class="text-xl font-semibold text-indigo-700">Quando e Por Que Usar?</span>
+                                    <span class="icon text-2xl text-indigo-700">+</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <ul class="list-disc list-inside pt-2 pb-4 text-stone-700 space-y-2">
+                                        <li><strong>Quando:</strong> Em projetos de desenvolvimento de novos produtos, onde os requisitos são incertos ou podem mudar muito.</li>
+                                        <li><strong>Quando:</strong> Quando você precisa entregar valor ao cliente em blocos funcionais e em curtos períodos de tempo.</li>
+                                        <li><strong>Por Quê:</strong> Para promover feedback rápido, adaptabilidade a mudanças e manter o time focado em um objetivo de curto prazo.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-b border-stone-200">
+                                <button class="accordion-header w-full flex justify-between items-center py-4 text-left">
+                                    <span class="text-xl font-semibold text-indigo-700">Como Usar? (O Ciclo dos Ritos)</span>
+                                    <span class="icon text-2xl text-indigo-700">+</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <div class="pt-2 pb-4">
+                                        <p class="text-stone-700 mb-4">O Scrum é guiado por eventos (ritos). A *Sprint* contém todos os outros eventos, que criam um ciclo de feedback constante.</p>
+                                        <div class="flex flex-col md:flex-row flex-wrap justify-center items-center gap-2 p-4 bg-stone-50 rounded-lg border border-stone-200 text-center">
+                                            <div class="bg-indigo-100 text-indigo-800 p-3 rounded-lg font-medium">1. Sprint Planning</div>
+                                            <span class="text-2xl text-indigo-700">&raquo;</span>
+                                            <div class="bg-indigo-100 text-indigo-800 p-3 rounded-lg font-medium">2. Daily Meeting</div>
+                                            <span class="text-2xl text-indigo-700">&raquo;</span>
+                                            <div class="bg-indigo-100 text-indigo-800 p-3 rounded-lg font-medium">3. Sprint Review (Foco: Produto)</div>
+                                            <span class="text-2xl text-indigo-700">&raquo;</span>
+                                            <div class="bg-indigo-100 text-indigo-800 p-3 rounded-lg font-medium">4. Retrospective (Foco: Processo)</div>
+                                            <span class="text-2xl text-indigo-700 md:w-full text-center md:rotate-90 md:-mt-8 md:-mb-6">&raquo; (Ciclo)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção 2: Gestão de Riscos e Decisões -->
+            <section id="section-riscos" class="main-section hidden">
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <nav class="flex flex-wrap gap-3 mb-6 border-b border-stone-200 pb-4" role="tablist">
+                        <button class="sub-nav-button text-stone-600 font-medium py-2 px-4 rounded-lg hover:bg-stone-200 transition-colors" onclick="showTool('riscos', 'gut')" data-tool="gut">Matriz GUT</button>
+                        <button class="sub-nav-button text-stone-600 font-medium py-2 px-4 rounded-lg hover:bg-stone-200 transition-colors" onclick="showTool('riscos', 'panico')" data-tool="panico">Curva do Pânico</button>
+                        <button class="sub-nav-button text-stone-600 font-medium py-2 px-4 rounded-lg hover:bg-stone-200 transition-colors" onclick="showTool('riscos', 'go-no-go')" data-tool="go-no-go">Análise "Go / No Go"</button>
+                    </nav>
+                    
+                    <!-- Ferramenta: Matriz GUT -->
+                    <div id="tool-gut" class="tool-content hidden">
+                        <h3 class="text-3xl font-bold mb-4">Matriz GUT (Gravidade, Urgência, Tendência)</h3>
+                        <p class="text-lg text-stone-600 mb-6">Uma ferramenta de priorização para transformar ansiedade e caos em uma lista lógica de ações.</p>
+                        
+                        <div class="accordion">
+                            <div class="accordion-item border-b border-stone-200">
+                                <button class="accordion-header w-full flex justify-between items-center py-4 text-left">
+                                    <span class="text-xl font-semibold text-indigo-700">Quando e Por Que Usar?</span>
+                                    <span class="icon text-2xl text-indigo-700">+</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <ul class="list-disc list-inside pt-2 pb-4 text-stone-700 space-y-2">
+                                        <li><strong>Quando:</strong> Quando você tem uma lista de problemas, riscos ou incertezas e não sabe por onde começar. Em momentos de crise.</li>
+                                        <li><strong>Por Quê:</strong> Para remover a subjetividade ("achismo") da priorização e focar os esforços no que realmente pode destruir o projeto.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-b border-stone-200">
+                                <button class="accordion-header w-full flex justify-between items-center py-4 text-left">
+                                    <span class="text-xl font-semibold text-indigo-700">Como Usar? (Exemplo)</span>
+                                    <span class="icon text-2xl text-indigo-700">+</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <div class="pt-2 pb-4">
+                                        <p class="text-stone-700 mb-4">Dê notas de 1 a 5 para cada fator. Multiplique (G x U x T) para obter um "score". Ordene do maior para o menor score.</p>
+                                        <div class="overflow-x-auto p-2 bg-stone-50 rounded-lg border border-stone-200">
+                                            <table class="w-full min-w-max text-left">
+                                                <thead class="border-b border-stone-300">
+                                                    <tr>
+                                                        <th class="p-3">Problema</th>
+                                                        <th class="p-3 text-center">G (1-5)</th>
+                                                        <th class="p-3 text-center">U (1-5)</th>
+                                                        <th class="p-3 text-center">T (1-5)</th>
+                                                        <th class="p-3 text-center font-bold">Score (G*U*T)</th>
+                                                        <th class="p-3 text-center font-bold">Prioridade</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="border-b border-stone-200 bg-red-50 text-red-900">
+                                                        <td class="p-3">Atraso no Fornecedor</td>
+                                                        <td class="p-3 text-center">5</td>
+                                                        <td class="p-3 text-center">5</td>
+                                                        <td class="p-3 text-center">4</td>
+                                                        <td class="p-3 text-center font-bold">100</td>
+                                                        <td class="p-3 text-center font-bold">1</td>
+                                                    </tr>
+                                                    <tr class="border-b border-stone-200 bg-yellow-50 text-yellow-900">
+                                                        <td class="p-3">Risco de nova legislação</td>
+                                                        <td class="p-3 text-center">4</td>
+                                                        <td class="p-3 text-center">3</td>
+                                                        <td class="p-3 text-center">3</td>
+                                                        <td class="p-3 text-center font-bold">36</td>
+                                                        <td class="p-3 text-center font-bold">2</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="p-3">Membro desmotivado</td>
+                                                        <td class="p-3 text-center">3</td>
+                                                        <td class="p-3 text-center">2</td>
+                                                        <td class="p-3 text-center">4</td>
+                                                        <td class="p-3 text-center font-bold">24</td>
+                                                        <td class="p-3 text-center font-bold">3</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ferramenta: Curva do Pânico -->
+                    <div id="tool-panico" class="tool-content hidden">
+                        <h3 class="text-3xl font-bold mb-4">Curva do Pânico</h3>
+                        <p class="text-lg text-stone-600 mb-6">Um gráfico de monitoramento para suas incertezas mais críticas (as priorizadas pela Matriz GUT).</p>
+                        <div class="accordion">
+                            <div class="accordion-item border-b border-stone-200">
+                                <button class="accordion-header w-full flex justify-between items-center py-4 text-left">
+                                    <span class="text-xl font-semibold text-indigo-700">Quando e Por Que Usar?</span>
+                                    <span class="icon text-2xl text-indigo-700">+</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <ul class="list-disc list-inside pt-2 pb-4 text-stone-700 space-y-2">
+                                        <li><strong>Quando:</strong> Em projetos inovadores ou com muitas incertezas, para monitorar se você está resolvendo os riscos ou se eles estão se acumulando.</li>
+                                        <li><strong>Por Quê:</strong> Para evitar ser surpreendido na "reta final" do projeto. É o seu "sistema de alerta precoce".</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-b border-stone-200">
+                                <button class="accordion-header w-full flex justify-between items-center py-4 text-left">
+                                    <span class="text-xl font-semibold text-indigo-700">Como Usar? (Conceito Visual)</span>
+                                    <span class="icon text-2xl text-indigo-700">+</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <div class="pt-2 pb-4">
+                                        <p class="text-stone-700 mb-4">Você define uma "Data Limite" e uma "Tolerância" de incertezas graves. Se a sua curva de incertezas reais ultrapassar a tolerância após a data, o "alerta de pânico" é acionado.</p>
+                                        <div class="relative w-full h-64 p-4 bg-stone-50 rounded-lg border border-stone-200">
+                                            <span class="absolute left-2 top-1/2 -translate-y-1/2 -rotate-90 text-sm text-stone-600">Nível de Incertezas</span>
+                                            <span class="absolute bottom-2 left-1/2 -translate-x-1/2 text-sm text-stone-600">Tempo (Data do Projeto)</span>
+                                            
+                                            <div class="absolute top-1/3 left-16 right-4 border-t-2 border-red-500 border-dashed">
+                                                <span class="absolute -top-3 right-0 text-sm text-red-600 font-medium">Limite de Tolerância</span>
+                                            </div>
+                                            
+                                            <div class="absolute bottom-8 left-20 w-3/4 h-1/2 border-b-4 border-blue-600" style="border-top-left-radius: 100% 50%; border-top-right-radius: 10% 50%;">
+                                                <span class="absolute top-0 right-0 text-sm text-blue-700 font-medium">Curva de Pânico (Real)</span>
+                                            </div>
+
+                                            <div class="absolute bottom-8 left-1/2 border-l-2 border-stone-400 h-1/2">
+                                                <span class="absolute -bottom-6 -left-8 text-sm text-stone-600">Data Limite</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ferramenta: Go / No Go -->
+                    <div id="tool-go-no-go" class="tool-content hidden">
+                        <h3 class="text-3xl font-bold mb-4">Análise "Go / No Go"</h3>
+                        <p class="text-lg text-stone-600 mb-6">Um momento formal de decisão ("portão") para continuar (Go) ou parar/pausar (No Go) um projeto ou uma fase.</p>
+                        <div class="accordion">
+                            <div class="accordion-item border-b border-stone-200">
+                                <button class="accordion-header w-full flex justify-between items-center py-4 text-left">
+                                    <span class="text-xl font-semibold text-indigo-700">Quando e Por Que Usar?</span>
+                                    <span class="icon text-2xl text-indigo-700">+</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <ul class="list-disc list-inside pt-2 pb-4 text-stone-700 space-y-2">
+                                        <li><strong>Quando:</strong> Em marcos críticos (ex: fim da fase de planejamento, antes de assinar um contrato caro, antes de lançar o produto).</li>
+                                        <li><strong>Por Quê:</strong> Para evitar o "efeito zumbi" (projetos que já deveriam ter morrido). Um "No Go" não é um fracasso, é uma decisão de negócio inteligente.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-b border-stone-200">
+                                <button class="accordion-header w-full flex justify-between items-center py-4 text-left">
+                                    <span class="text-xl font-semibold text-indigo-700">Como Usar? (O Fluxo de Decisão)</span>
+                                    <span class="icon text-2xl text-indigo-700">+</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <div class="pt-2 pb-4">
+                                        <p class="text-stone-700 mb-4">A decisão é tomada pelo Comitê do Projeto ou Patrocinadores, analisando 4 fatores: Entregas vs. Expectativas, Saúde Financeira, Cenário de Mercado e Riscos.</p>
+                                        <div class="flex flex-col items-center p-4 bg-stone-50 rounded-lg border border-stone-200">
+                                            <div class="bg-white border-2 border-indigo-600 p-4 rounded-lg shadow font-bold text-center">
+                                                Análise dos 4 Fatores
+                                            </div>
+                                            <div class="h-8 w-px bg-indigo-600"></div>
+                                            <div class="bg-indigo-600 text-white p-4 rounded-md shadow-lg font-bold text-center -rotate-45 w-32">
+                                                DECISÃO
+                                            </div>
+                                            <div class="h-8 w-px bg-indigo-600 rotate-45 -mt-4 -mb-4"></div>
+                                            <div class="flex w-full mt-4">
+                                                <div class="flex-1 text-center">
+                                                    <div class="h-8 w-px bg-green-500 mx-auto -rotate-45"></div>
+                                                    <div class="bg-green-100 text-green-800 border border-green-300 p-4 rounded-lg shadow font-bold mt-2">
+                                                        GO (Continuar)
+                                                    </div>
+                                                </div>
+                                                <div class="flex-1 text-center">
+                                                    <div class="h-8 w-px bg-red-500 mx-auto rotate-45"></div>
+                                                    <div class="bg-red-100 text-red-800 border border-red-300 p-4 rounded-lg shadow font-bold mt-2">
+                                                        NO GO (Parar/Pausar)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção 3: Gestão de Pessoas -->
+            <section id="section-pessoas" class="main-section hidden">
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <nav class="flex flex-wrap gap-3 mb-6 border-b border-stone-200 pb-4" role="tablist">
+                        <button class="sub-nav-button text-stone-600 font-medium py-2 px-4 rounded-lg hover:bg-stone-200 transition-colors" onclick="showTool('pessoas', 'comunicacao')" data-tool="comunicacao">Comunicação e Expectativas</button>
+                        <button class="sub-nav-button text-stone-600 font-medium py-2 px-4 rounded-lg hover:bg-stone-200 transition-colors" onclick="showTool('pessoas', 'conflitos')" data-tool="conflitos">Gestão de Conflitos</button>
+                    </nav>
+
+                    <!-- Ferramenta: Comunicação -->
+                    <div id="tool-comunicacao" class="tool-content hidden">
+                        <h3 class="text-3xl font-bold mb-4">Plano de Comunicação e Gestão de Expectativas</h3>
+                        <p class="text-lg text-stone-600 mb-6">A estratégia para garantir que a pessoa certa receba a informação certa, no formato certo e na hora certa.</p>
+                        <div class="accordion">
+                            <div class="accordion-item border-b border-stone-200">
+                                <button class="accordion-header w-full flex justify-between items-center py-4 text-left">
+                                    <span class="text-xl font-semibold text-indigo-700">Quando e Por Que Usar?</span>
+                                    <span class="icon text-2xl text-indigo-700">+</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <ul class="list-disc list-inside pt-2 pb-4 text-stone-700 space-y-2">
+                                        <li><strong>Quando:</strong> No início de todo projeto (Plano de Comunicação) e antes de toda reunião importante (Técnica dos 3 Tópicos).</li>
+                                        <li><strong>Por Quê:</strong> Para evitar a "aparente harmonia" (onde todos concordam, mas ninguém entendeu a mesma coisa), que é a principal causa de falha em projetos.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-b border-stone-200">
+                                <button class="accordion-header w-full flex justify-between items-center py-4 text-left">
+                                    <span class="text-xl font-semibold text-indigo-700">Como Usar? (Conheça seu Público)</span>
+                                    <span class="icon text-2xl text-indigo-700">+</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <div class="pt-2 pb-4">
+                                        <p class="text-stone-700 mb-4">Adapte sua mensagem. Um patrocinador (Público "Resumido") quer saber o status do orçamento e prazo. Um usuário-chave (Público "Detalhado") quer saber como a funcionalidade X vai operar.</p>
+                                        <div class="flex flex-col md:flex-row justify-center items-center gap-2 p-4 bg-stone-50 rounded-lg border border-stone-200 text-center">
+                                            <div class="bg-white p-3 rounded-lg shadow border">Público (Patrocinador)</div>
+                                            <span class="text-2xl text-indigo-700">&raquo;</span>
+                                            <div class="bg-white p-3 rounded-lg shadow border">Análise (Quer resumo)</div>
+                                            <span class="text-2xl text-indigo-700">&raquo;</span>
+                                            <div class="bg-indigo-100 text-indigo-800 p-3 rounded-lg font-medium">Mensagem Adaptada (Foco no $ e Prazo)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-b border-stone-200">
+                                <button class="accordion-header w-full flex justify-between items-center py-4 text-left">
+                                    <span class="text-xl font-semibold text-indigo-700">Como Usar? (Técnica dos 3 Tópicos para Reuniões)</span>
+                                    <span class="icon text-2xl text-indigo-700">+</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <p class="pt-2 pb-4 text-stone-700">Se você não consegue preencher os 3, você não precisa de uma reunião. Todo convite deve ter:</p>
+                                    <ul class="list-decimal list-inside pt-2 pb-4 text-stone-700 space-y-2 font-medium">
+                                        <li><strong>Pauta:</strong> O que vamos discutir?</li>
+                                        <li><strong>Objetivos:</strong> O que precisa estar decidido ao final?</li>
+                                        <li><strong>Requisitos:</strong> O que preciso ler/fazer ANTES da reunião?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ferramenta: Conflitos -->
+                    <div id="tool-conflitos" class="tool-content hidden">
+                        <h3 class="text-3xl font-bold mb-4">Gestão de Conflitos</h3>
+                        <p class="text-lg text-stone-600 mb-6">Um conjunto de *soft skills* para lidar com o "fator humano" e a inevitável fricção entre pessoas.</p>
+                        <div class="accordion">
+                            <div class="accordion-item border-b border-stone-200">
+                                <button class="accordion-header w-full flex justify-between items-center py-4 text-left">
+                                    <span class="text-xl font-semibold text-indigo-700">Quando e Por Que Usar?</span>
+                                    <span class="icon text-2xl text-indigo-700">+</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <ul class="list-disc list-inside pt-2 pb-4 text-stone-700 space-y-2">
+                                        <li><strong>Quando:</strong> No primeiro sinal de atrito. Não espere o problema explodir.</li>
+                                        <li><strong>Por Quê:</strong> Conflitos não gerenciados destroem a sinergia, matam a produtividade e podem sabotar o projeto.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-b border-stone-200">
+                                <button class="accordion-header w-full flex justify-between items-center py-4 text-left">
+                                    <span class="text-xl font-semibold text-indigo-700">Como Usar? (Estratégias Chave)</span>
+                                    <span class="icon text-2xl text-indigo-700">+</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <div class="pt-2 pb-4">
+                                        <p class="text-stone-700 mb-4">A base é agir sobre o problema, não sobre as pessoas. Tente entender a motivação por trás da posição da pessoa.</p>
+                                        <div class="flex flex-col md:flex-row justify-center items-stretch gap-4 p-4 bg-stone-50 rounded-lg border border-stone-200 text-center">
+                                            <div class="flex-1 bg-white p-4 rounded-lg shadow border">
+                                                <h4 class="font-bold mb-2 text-indigo-700">1. Mantenha a Calma e Ouça</h4>
+                                                <p class="text-sm">Chame as partes (talvez individualmente) e ouça com empatia.</p>
+                                            </div>
+                                            <div class="flex-1 bg-white p-4 rounded-lg shadow border">
+                                                <h4 class="font-bold mb-2 text-indigo-700">2. Assuma a Responsabilidade</h4>
+                                                <p class="text-sm">Seja o "escudo" do time. Foque todos na solução, não na culpa.</p>
+                                            </div>
+                                            <div class="flex-1 bg-white p-4 rounded-lg shadow border">
+                                                <h4 class="font-bold mb-2 text-indigo-700">3. Use Estratégias</h4>
+                                                <p class="text-sm">Dê poder (empoderamento controlado) ou, em último caso, mude o time (realocação estratégica).</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initAccordions();
+            
+            showSection('processos');
+            showTool('processos', 'kanban');
+        });
+
+        function initAccordions() {
+            const headers = document.querySelectorAll('.accordion-header');
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('.icon');
+                    
+                    if (header.classList.contains('active')) {
+                        header.classList.remove('active');
+                        icon.textContent = '+';
+                    } else {
+                        
+                        const allActiveHeaders = document.querySelectorAll('.accordion-header.active');
+                        allActiveHeaders.forEach(activeHeader => {
+                            activeHeader.classList.remove('active');
+                            activeHeader.querySelector('.icon').textContent = '+';
+                        });
+                        
+                        header.classList.add('active');
+                        icon.textContent = '−';
+                    }
+                });
+            });
+        }
+
+        function showSection(sectionId) {
+            
+            document.querySelectorAll('.main-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(`section-${sectionId}`).classList.remove('hidden');
+
+            
+            document.querySelectorAll('.main-nav-card').forEach(card => {
+                if (card.dataset.section === sectionId) {
+                    card.classList.add('active');
+                } else {
+                    card.classList.remove('active');
+                }
+            });
+        }
+
+        function showTool(sectionId, toolId) {
+            const section = document.getElementById(`section-${sectionId}`);
+            
+            
+            section.querySelectorAll('.tool-content').forEach(tool => {
+                tool.classList.add('hidden');
+            });
+            section.querySelector(`#tool-${toolId}`).classList.remove('hidden');
+
+            
+            section.querySelectorAll('.sub-nav-button').forEach(button => {
+                if (button.dataset.tool === toolId) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+            
+            
+            section.querySelectorAll('.accordion-header.active').forEach(header => {
+                header.classList.remove('active');
+                header.querySelector('.icon').textContent = '+';
+            });
+        }
+    </script>
+
+</body>
+</html>
