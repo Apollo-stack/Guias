@@ -1,0 +1,379 @@
+<!-- Chosen Palette: Custom - "Cool Tech" (#FFFFFF, #F8F9FA, #6C757D, #0D6EFD, #0759d3) -->
+<!-- Application Structure Plan: The application is designed as a single-page app with a sticky top navigation bar to facilitate easy access to different stages of the workflow. The structure is thematic: "Configuração" for the one-time setup, "Simulador de Ciclo" for the daily interactive workflow, and "Referência de Comandos" as a quick cheatsheet. This task-oriented design was chosen over a linear document because users have different needs; a beginner might follow it sequentially, while an experienced user might jump directly to the simulator or the command reference. This structure enhances usability by catering to multiple user journeys. -->
+<!-- Visualization & Content Choices: 
+- Report Info: Initial PC to GitHub setup process. -> Goal: Organize/Inform -> Viz/Presentation: Accordion-style checklist. -> Interaction: Users can click to expand each step, revealing explanations and code snippets with copy buttons. -> Justification: Breaks a long process into manageable chunks, preventing overwhelm and making it easy to follow. -> Library/Method: HTML/Tailwind/JS.
+- Report Info: The daily sync cycle (pull, work, add, commit, push). -> Goal: Organize/Change -> Viz/Presentation: Interactive diagram with three columns (PC, GitHub, Notebook). -> Interaction: Buttons for "PULL" and "PUSH" trigger animations that visually move a "file" element between the columns, with accompanying text explaining the state change. -> Justification: This transforms the most critical and abstract concept of the guide into a tangible, memorable visual process. -> Library/Method: HTML/Tailwind/JS.
+- Report Info: All terminal commands. -> Goal: Inform -> Viz/Presentation: A clean list of code blocks. -> Interaction: Each code block has a click-to-copy button. -> Justification: Provides a high-utility feature that streamlines the actual execution of the commands for the user. -> Library/Method: HTML/Tailwind/JS.
+- CONFIRMATION: No charts were needed as the content is procedural, not data-driven. The focus is on interactive process diagrams. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Interativo de Sincronização Git</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
+        }
+        .nav-link.active {
+            color: #0D6EFD;
+            border-bottom-color: #0D6EFD;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out;
+        }
+        .code-block {
+            position: relative;
+        }
+        .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #6C757D;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .copy-button:hover {
+            background-color: #495057;
+        }
+        .sim-col {
+            transition: background-color 0.3s ease;
+        }
+        .sim-file {
+            transition: all 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="text-center py-8 bg-white border-b">
+        <h1 class="text-4xl md:text-5xl font-bold text-[#212529] mb-2">Simulador de Sincronização Git</h1>
+        <p class="text-lg text-gray-600">Aprenda o fluxo de trabalho entre PC, GitHub e Notebook de forma interativa.</p>
+    </header>
+
+    <nav id="navbar-main" class="sticky top-0 bg-white/90 backdrop-blur-sm shadow-sm z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-center items-center space-x-4 md:space-x-8">
+                <a href="#configuracao" class="nav-link py-4 text-gray-600 font-semibold border-b-2 border-transparent hover:text-blue-600">Configuração</a>
+                <a href="#simulador" class="nav-link py-4 text-gray-600 font-semibold border-b-2 border-transparent hover:text-blue-600">Simulador de Ciclo</a>
+                <a href="#comandos" class="nav-link py-4 text-gray-600 font-semibold border-b-2 border-transparent hover:text-blue-600">Referência de Comandos</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <section id="configuracao" class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">Configuração Inicial</h2>
+                <p class="mt-2 text-gray-700 max-w-2xl mx-auto">Siga estes passos uma única vez para configurar seu ambiente e enviar seu primeiro arquivo para o GitHub.</p>
+            </div>
+            <div class="max-w-3xl mx-auto space-y-4">
+                <div class="accordion-item bg-white rounded-lg shadow">
+                    <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center">
+                        <span>Parte 1: Pré-requisitos (Em ambas as máquinas)</span>
+                        <span class="transform transition-transform duration-300 text-blue-500 text-2xl">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="p-4 border-t">
+                            <p class="mb-2">Instale o Git e configure seu nome e email. Isso identifica você em cada salvamento.</p>
+                            <div class="code-block bg-gray-800 text-white p-4 rounded-md font-mono text-sm">
+                                <button class="copy-button">Copiar</button>
+                                <pre><code>git config --global user.name "Seu Nome"
+git config --global user.email "seu-email@exemplo.com"</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item bg-white rounded-lg shadow">
+                    <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center">
+                        <span>Parte 2: Do PC para o GitHub</span>
+                        <span class="transform transition-transform duration-300 text-blue-500 text-2xl">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="p-4 border-t space-y-3">
+                            <p>Crie um projeto local, adicione um arquivo e envie para um novo repositório no GitHub.</p>
+                            <p class="font-semibold">1. Iniciar repositório:</p>
+                            <div class="code-block bg-gray-800 text-white p-4 rounded-md font-mono text-sm">
+                                <button class="copy-button">Copiar</button>
+                                <pre><code>git init</code></pre>
+                            </div>
+                            <p class="font-semibold">2. Adicionar arquivos e fazer commit:</p>
+                            <div class="code-block bg-gray-800 text-white p-4 rounded-md font-mono text-sm">
+                                <button class="copy-button">Copiar</button>
+                                <pre><code>git add .
+git commit -m "Primeiro commit"</code></pre>
+                            </div>
+                             <p class="font-semibold">3. Conectar ao GitHub e enviar:</p>
+                            <div class="code-block bg-gray-800 text-white p-4 rounded-md font-mono text-sm">
+                                <button class="copy-button">Copiar</button>
+                                <pre><code>git remote add origin URL_DO_SEU_REPO.git
+git branch -M main
+git push -u origin main</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item bg-white rounded-lg shadow">
+                    <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center">
+                        <span>Parte 3: Do GitHub para o Notebook</span>
+                        <span class="transform transition-transform duration-300 text-blue-500 text-2xl">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="p-4 border-t">
+                            <p class="mb-2">Na sua segunda máquina, clone o repositório para baixar todos os arquivos.</p>
+                            <div class="code-block bg-gray-800 text-white p-4 rounded-md font-mono text-sm">
+                                <button class="copy-button">Copiar</button>
+                                <pre><code>git clone URL_DO_SEU_REPO.git</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="simulador" class="py-16 bg-white rounded-lg shadow-lg my-8 p-4 md:p-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">Simulador do Ciclo Diário</h2>
+                <p class="mt-2 text-gray-700 max-w-2xl mx-auto">Este é o fluxo que você usará todos os dias. Clique nos botões para ver como as alterações se movem entre suas máquinas e o GitHub.</p>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 text-center">
+                <div id="pc-col" class="sim-col bg-blue-50 p-4 rounded-lg border-2 border-dashed">
+                    <h3 class="font-bold text-lg">PC</h3>
+                    <div id="pc-files" class="relative min-h-[80px] mt-4 flex justify-center items-center">
+                        <div id="pc-file" class="sim-file absolute w-16 h-10 bg-blue-500 text-white rounded-lg flex items-center justify-center font-bold text-sm shadow-md"><span>v1</span></div>
+                    </div>
+                </div>
+                <div id="github-col" class="sim-col bg-gray-50 p-4 rounded-lg border-2 border-dashed">
+                    <h3 class="font-bold text-lg">GitHub (Nuvem)</h3>
+                    <div id="github-files" class="relative min-h-[80px] mt-4 flex justify-center items-center">
+                         <div id="github-file" class="sim-file absolute w-16 h-10 bg-gray-500 text-white rounded-lg flex items-center justify-center font-bold text-sm shadow-md"><span>v1</span></div>
+                    </div>
+                </div>
+                <div id="notebook-col" class="sim-col bg-green-50 p-4 rounded-lg border-2 border-dashed">
+                    <h3 class="font-bold text-lg">Notebook</h3>
+                    <div id="notebook-files" class="relative min-h-[80px] mt-4 flex justify-center items-center">
+                        <div id="notebook-file" class="sim-file absolute w-16 h-10 bg-green-500 text-white rounded-lg flex items-center justify-center font-bold text-sm shadow-md"><span>v1</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <p id="sim-status" class="text-gray-700 font-semibold min-h-[24px] mb-4">Todas as máquinas estão sincronizadas na versão 1.</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button id="sim-edit-pc" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">1. Editar no PC</button>
+                    <button id="sim-push" class="px-4 py-2 bg-gray-400 text-white rounded-lg transition cursor-not-allowed" disabled>2. Push para GitHub</button>
+                    <button id="sim-pull" class="px-4 py-2 bg-gray-400 text-white rounded-lg transition cursor-not-allowed" disabled>3. Pull no Notebook</button>
+                    <button id="sim-reset" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">Resetar</button>
+                </div>
+            </div>
+        </section>
+        
+        <section id="comandos" class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">Referência Rápida de Comandos</h2>
+                <p class="mt-2 text-gray-700 max-w-2xl mx-auto">Uma lista dos comandos mais importantes do ciclo de trabalho diário.</p>
+            </div>
+            <div class="max-w-3xl mx-auto space-y-4">
+                <div>
+                    <h3 class="font-semibold">git pull</h3>
+                    <p class="text-sm text-gray-600 mb-2">Baixa as últimas alterações do repositório remoto (GitHub) para a sua máquina local. **Sempre execute antes de começar a trabalhar.**</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold">git add .</h3>
+                    <p class="text-sm text-gray-600 mb-2">Adiciona todas as alterações atuais (arquivos novos, modificados ou deletados) à "Staging Area", preparando-os para o commit.</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold">git commit -m "sua mensagem"</h3>
+                    <p class="text-sm text-gray-600 mb-2">Salva as alterações preparadas no histórico do seu repositório local com uma mensagem descritiva.</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold">git push</h3>
+                    <p class="text-sm text-gray-600 mb-2">Envia os seus commits (salvamentos locais) para o repositório remoto (GitHub), compartilhando suas alterações.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation scroll highlighting
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            window.onscroll = () => {
+                let current = 'configuracao';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active', 'text-blue-600');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active', 'text-blue-600');
+                    }
+                });
+            };
+
+            // Accordion
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('span:last-child');
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        icon.classList.remove('rotate-45');
+                    } else {
+                        document.querySelectorAll('.accordion-content').forEach(c => c.style.maxHeight = null);
+                        document.querySelectorAll('.accordion-header span:last-child').forEach(i => i.classList.remove('rotate-45'));
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        icon.classList.add('rotate-45');
+                    }
+                });
+            });
+
+            // Copy buttons
+            document.querySelectorAll('.copy-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const code = button.nextElementSibling.textContent;
+                    navigator.clipboard.writeText(code).then(() => {
+                        button.textContent = 'Copiado!';
+                        setTimeout(() => { button.textContent = 'Copiar'; }, 2000);
+                    });
+                });
+            });
+
+            // Simulator
+            const simState = {
+                pcVersion: 1,
+                githubVersion: 1,
+                notebookVersion: 1,
+                stage: 0, // 0: synced, 1: pc edited, 2: pushed, 3: pulled
+                elements: {
+                    pcFile: document.getElementById('pc-file'),
+                    githubFile: document.getElementById('github-file'),
+                    notebookFile: document.getElementById('notebook-file'),
+                    pcFiles: document.getElementById('pc-files'),
+                    githubFiles: document.getElementById('github-files'),
+                    notebookFiles: document.getElementById('notebook-files'),
+                    status: document.getElementById('sim-status'),
+                    btnEdit: document.getElementById('sim-edit-pc'),
+                    btnPush: document.getElementById('sim-push'),
+                    btnPull: document.getElementById('sim-pull'),
+                    btnReset: document.getElementById('sim-reset'),
+                }
+            };
+            
+            function updateSimUI() {
+                const { pcVersion, githubVersion, notebookVersion, stage, elements } = simState;
+                elements.pcFile.querySelector('span').textContent = `v${pcVersion}`;
+                elements.githubFile.querySelector('span').textContent = `v${githubVersion}`;
+                elements.notebookFile.querySelector('span').textContent = `v${notebookVersion}`;
+
+                // Reset buttons
+                elements.btnEdit.disabled = true;
+                elements.btnPush.disabled = true;
+                elements.btnPull.disabled = true;
+                [elements.btnEdit, elements.btnPush, elements.btnPull].forEach(btn => {
+                    btn.classList.add('bg-gray-400', 'cursor-not-allowed');
+                    btn.classList.remove('bg-blue-600', 'hover:bg-blue-700', 'bg-green-600', 'hover:bg-green-700');
+                });
+                
+                switch(stage) {
+                    case 0:
+                        elements.status.textContent = `Todas as máquinas estão sincronizadas na versão ${githubVersion}.`;
+                        elements.btnEdit.disabled = false;
+                        elements.btnEdit.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                        elements.btnEdit.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                        break;
+                    case 1:
+                        elements.status.textContent = 'PC foi atualizado para v2. Agora envie para o GitHub.';
+                        elements.btnPush.disabled = false;
+                        elements.btnPush.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                        elements.btnPush.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                        break;
+                    case 2:
+                        elements.status.textContent = 'GitHub está na v2. Atualize o Notebook para sincronizar.';
+                        elements.btnPull.disabled = false;
+                        elements.btnPull.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                        elements.btnPull.classList.add('bg-green-600', 'hover:bg-green-700');
+                        break;
+                    case 3:
+                        elements.status.textContent = `Tudo sincronizado na nova versão ${githubVersion}! Pode resetar para começar de novo.`;
+                        break;
+                }
+            }
+            
+            simState.elements.btnEdit.addEventListener('click', () => {
+                if (simState.stage !== 0) return;
+                simState.pcVersion++;
+                simState.stage = 1;
+                simState.elements.pcFile.classList.add('ring-4', 'ring-yellow-400');
+                updateSimUI();
+            });
+
+            simState.elements.btnPush.addEventListener('click', () => {
+                if (simState.stage !== 1) return;
+                const fileClone = simState.elements.pcFile.cloneNode(true);
+                simState.elements.pcFiles.appendChild(fileClone);
+                const rect = simState.elements.githubFiles.getBoundingClientRect();
+                const startRect = fileClone.getBoundingClientRect();
+                
+                fileClone.style.transform = `translate(${rect.left - startRect.left + (rect.width - startRect.width)/2}px, ${rect.top - startRect.top + (rect.height - startRect.height)/2}px)`;
+
+                setTimeout(() => {
+                    simState.githubVersion = simState.pcVersion;
+                    simState.stage = 2;
+                    simState.elements.pcFile.classList.remove('ring-4', 'ring-yellow-400');
+                    fileClone.remove();
+                    updateSimUI();
+                }, 500);
+            });
+
+            simState.elements.btnPull.addEventListener('click', () => {
+                 if (simState.stage !== 2) return;
+                const fileClone = simState.elements.githubFile.cloneNode(true);
+                simState.elements.githubFiles.appendChild(fileClone);
+                const rect = simState.elements.notebookFiles.getBoundingClientRect();
+                const startRect = fileClone.getBoundingClientRect();
+                
+                fileClone.style.transform = `translate(${rect.left - startRect.left + (rect.width - startRect.width)/2}px, ${rect.top - startRect.top + (rect.height - startRect.height)/2}px)`;
+                
+                setTimeout(() => {
+                    simState.notebookVersion = simState.githubVersion;
+                    simState.stage = 3;
+                    fileClone.remove();
+                    updateSimUI();
+                }, 500);
+            });
+            
+            simState.elements.btnReset.addEventListener('click', () => {
+                simState.pcVersion = 1;
+                simState.githubVersion = 1;
+                simState.notebookVersion = 1;
+                simState.stage = 0;
+                simState.elements.pcFile.classList.remove('ring-4', 'ring-yellow-400');
+                updateSimUI();
+            });
+            
+            updateSimUI();
+
+        });
+    </script>
+</body>
+</html>
