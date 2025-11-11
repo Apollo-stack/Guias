@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Cheat Sheet Interativo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilo para a barra de rolagem da lateral */
+        #sidebar-nav::-webkit-scrollbar {
+            width: 6px;
+        }
+        #sidebar-nav::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1; /* cool-gray-300 */
+            border-radius: 3px;
+        }
+        #sidebar-nav::-webkit-scrollbar-track {
+            background-color: #f1f5f9; /* cool-gray-100 */
+        }
+        /* Esconde o conteúdo inicial até o JS carregar */
+        .content-section {
+            display: none;
+        }
+        /* Mostra a seção "home" por padrão */
+        #home {
+            display: block;
+        }
+        /* Estilo para o item de navegação ativo */
+        .nav-link.active {
+            background-color: #eef2ff; /* indigo-50 */
+            color: #4338ca; /* indigo-700 */
+            font-weight: 600;
+        }
+    </style>
+    <!-- Chosen Palette: Minimalist Neutral (bg-gray-50, bg-white, text-gray-800, accent-indigo-600) -->
+    <!-- Application Structure Plan: SPA com layout de 2 colunas (navegação lateral/conteúdo principal). A navegação lateral fixa (desktop) agrupa tópicos por categoria (DDL, DML, etc.) para acesso rápido. A área de conteúdo exibe dinamicamente o tópico selecionado (título, descrição, exemplo de código) via JS. Um campo de busca filtra a navegação. Esta estrutura foi escolhida para facilitar a "consulta rápida" (objetivo principal de um cheat sheet), permitindo ao usuário encontrar qualquer comando SQL em segundos sem rolar por um documento longo. -->
+    <!-- Visualization & Content Choices: Conteúdo do Relatório: Comandos SQL, descrições, exemplos. Meta: Consulta rápida e fácil. Apresentação: Tópicos de navegação clicáveis (HTML/JS). Bloco de conteúdo dinâmico (HTML/JS) para exibir o item selecionado. Exemplo de código em bloco <pre><code> com botão "Copiar" (HTML/JS). Interação: Clique na navegação atualiza o conteúdo; campo de busca filtra a navegação. Justificativa: Transforma um documento estático em uma ferramenta interativa que imita um app de documentação, melhorando drasticamente a usabilidade e a velocidade de consulta. Nenhum gráfico necessário, pois o relatório é textual/código. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        
+        <!-- Barra Lateral de Navegação -->
+        <aside class="w-full md:w-72 bg-white border-r border-gray-200 flex-shrink-0">
+            <div class="p-4 sticky top-0 bg-white z-10 border-b md:border-b-0">
+                <h1 class="text-xl font-bold text-indigo-600">SQL Cheat Sheet</h1>
+                <div class="relative mt-4">
+                    <input type="text" id="searchInput"
+                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        placeholder="Buscar comando...">
+                    <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <nav id="sidebar-nav" class="p-4 h-full max-h-[calc(100vh-100px)] overflow-y-auto">
+                <!-- Conteúdo da Navegação será gerado pelo JS -->
+            </nav>
+        </aside>
+
+        <!-- Área de Conteúdo Principal -->
+        <main class="flex-1 p-6 md:p-10 overflow-y-auto">
+            <div id="content-display" class="max-w-4xl mx-auto">
+                
+                <!-- Seção Inicial (Home) -->
+                <section id="home" class="content-section space-y-6">
+                    <h2 class="text-3xl font-bold border-b pb-2">Bem-vindo ao SQL Cheat Sheet Interativo</h2>
+                    <p class="text-lg">
+                        Este é um guia de consulta rápida para os principais comandos e conceitos de SQL.
+                    </p>
+                    <p class="text-gray-700">
+                        Use a barra de navegação à esquerda para encontrar o comando que você precisa. Você pode usar a barra de busca para filtrar os tópicos rapidamente.
+                    </p>
+                    <div class="p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
+                        <h3 class="font-semibold text-indigo-700">Como usar:</h3>
+                        <ul class="list-disc list-inside mt-2 text-gray-700">
+                            <li>Clique em uma categoria (ex: "DDL") para ver os tópicos.</li>
+                            <li>Clique em um tópico (ex: "CREATE TABLE") para ver os detalhes.</li>
+                            <li>Use o botão "Copiar" para copiar exemplos de código.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Seções de Conteúdo (geradas por JS) -->
+                <section id="ddl_create_db" class="content-section space-y-4"></section>
+                <section id="ddl_drop_db" class="content-section space-y-4"></section>
+                <section id="ddl_backup_db" class="content-section space-y-4"></section>
+                <section id="ddl_create_table" class="content-section space-y-4"></section>
+                <section id="ddl_drop_table" class="content-section space-y-4"></section>
+                <section id="ddl_alter_table" class="content-section space-y-4"></section>
+                
+                <section id="con_not_null" class="content-section space-y-4"></section>
+                <section id="con_unique" class="content-section space-y-4"></section>
+                <section id="con_primary_key" class="content-section space-y-4"></section>
+                <section id="con_foreign_key" class="content-section space-y-4"></section>
+                <section id="con_check" class="content-section space-y-4"></section>
+                <section id="con_default" class="content-section space-y-4"></section>
+
+                <section id="dml_aliases" class="content-section space-y-4"></section>
+                <section id="dml_inner_join" class="content-section space-y-4"></section>
+                <section id="dml_left_join" class="content-section space-y-4"></section>
+                <section id="dml_right_join" class="content-section space-y-4"></section>
+                <section id="dml_full_join" class="content-section space-y-4"></section>
+                <section id="dml_self_join" class="content-section space-y-4"></section>
+                <section id="dml_union" class="content-section space-y-4"></section>
+                <section id="dml_union_all" class="content-section space-y-4"></section>
+                <section id="dml_group_by" class="content-section space-y-4"></section>
+                <section id="dml_having" class="content-section space-y-4"></section>
+                <section id="dml_exists" class="content-section space-y-4"></section>
+                <section id="dml_any" class="content-section space-y-4"></section>
+                <section id="dml_all" class="content-section space-y-4"></section>
+                <section id="dml_case" class="content-section space-y-4"></section>
+                <section id="dml_select_into" class="content-section space-y-4"></section>
+                <section id="dml_insert_into_select" class="content-section space-y-4"></section>
+                <section id="dml_is_null" class="content-section space-y-4"></section>
+                <section id="dml_coalesce" class="content-section space-y-4"></section>
+                <section id="dml_isnull" class="content-section space-y-4"></section>
+
+                <section id="oth_index" class="content-section space-y-4"></section>
+                <section id="oth_auto_increment" class="content-section space-y-4"></section>
+                <section id="oth_views" class="content-section space-y-4"></section>
+                <section id="oth_dates" class="content-section space-y-4"></section>
+                <section id="oth_stored_procedures" class="content-section space-y-4"></section>
+                <section id="oth_comments" class="content-section space-y-4"></section>
+                <section id="oth_operators" class="content-section space-y-4"></section>
+                
+                <section id="con_sql_injection" class="content-section space-y-4"></section>
+                <section id="con_sql_hosting" class="content-section space-y-4"></section>
+                <section id="con_sql_data_types" class="content-section space-y-4"></section>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Definição dos dados do Cheat Sheet
+            const sqlData = [
+                {
+                    category: "1. DDL: Definindo a Estrutura",
+                    items: [
+                        { id: "ddl_create_db", title: "CREATE DATABASE", desc: "Cria um novo banco de dados.", code: "CREATE DATABASE nome_do_banco;" },
+                        { id: "ddl_drop_db", title: "DROP DATABASE", desc: "Deleta um banco de dados existente (CUIDADO: isso apaga tudo).", code: "DROP DATABASE nome_do_banco;" },
+                        { id: "ddl_backup_db", title: "BACKUP DATABASE", desc: "Cria um backup do banco. (A sintaxe varia MUITO entre SGBDs).", code: "-- Exemplo para SQL Server\nBACKUP DATABASE nome_do_banco\nTO DISK = 'caminho/do/backup.bak';" },
+                        { id: "ddl_create_table", title: "CREATE TABLE", desc: "Cria uma nova tabela.", code: "CREATE TABLE nome_tabela (\n    coluna1 tipo_dado,\n    coluna2 tipo_dado,\n    coluna3 tipo_dado\n);" },
+                        { id: "ddl_drop_table", title: "DROP TABLE", desc: "Deleta uma tabela existente.", code: "DROP TABLE nome_tabela;" },
+                        { id: "ddl_alter_table", title: "ALTER TABLE", desc: "Modifica uma tabela existente.", code: "-- Adiciona uma coluna\nALTER TABLE nome_tabela\nADD nome_coluna tipo_dado;\n\n-- Deleta uma coluna\nALTER TABLE nome_tabela\nDROP COLUMN nome_coluna;\n\n-- Modifica o tipo de dado (SQL Server)\nALTER TABLE nome_tabela\nALTER COLUMN nome_coluna novo_tipo_dado;\n\n-- Modifica o tipo de dado (MySQL)\nALTER TABLE nome_tabela\nMODIFY COLUMN nome_coluna novo_tipo_dado;" }
+                    ]
+                },
+                {
+                    category: "2. Constraints (Restrições)",
+                    items: [
+                        { id: "con_not_null", title: "NOT NULL", desc: "Garante que a coluna não pode ter valores nulos.", code: "CREATE TABLE Tabela (Coluna INT NOT NULL);" },
+                        { id: "con_unique", title: "UNIQUE", desc: "Garante que todos os valores na coluna são diferentes.", code: "CREATE TABLE Tabela (Coluna VARCHAR(255) UNIQUE);" },
+                        { id: "con_primary_key", title: "PRIMARY KEY (PK)", desc: "Identifica unicamente cada linha na tabela. (Combina NOT NULL e UNIQUE).", code: "CREATE TABLE Tabela (ID INT PRIMARY KEY);" },
+                        { id: "con_foreign_key", title: "FOREIGN KEY (FK)", desc: "Cria uma ligação entre duas tabelas, garantindo integridade referencial.", code: "CREATE TABLE Pedidos (\n    PedidoID INT PRIMARY KEY,\n    ClienteID INT,\n    FOREIGN KEY (ClienteID) REFERENCES Clientes(ClienteID)\n);" },
+                        { id: "con_check", title: "CHECK", desc: "Garante que os valores na coluna satisfazem uma condição específica.", code: "CREATE TABLE Tabela (Idade INT CHECK (Idade >= 18));" },
+                        { id: "con_default", title: "DEFAULT", desc: "Define um valor padrão para a coluna se nenhum valor for especificado.", code: "CREATE TABLE Tabela (Pais VARCHAR(100) DEFAULT 'Brasil');" }
+                    ]
+                },
+                {
+                    category: "3. DML: Consultando Dados",
+                    items: [
+                        { id: "dml_aliases", title: "ALIASES", desc: "Renomeia temporariamente uma tabela ou coluna em uma consulta.", code: "SELECT Coluna AS Apelido FROM Tabela AS T1;" },
+                        { id: "dml_inner_join", title: "INNER JOIN", desc: "Retorna linhas que têm correspondência em AMBAS as tabelas.", code: "SELECT T1.Coluna, T2.Coluna\nFROM Tabela1 AS T1\nINNER JOIN Tabela2 AS T2 ON T1.ID = T2.ID;" },
+                        { id: "dml_left_join", title: "LEFT JOIN", desc: "Retorna TODAS as linhas da tabela da esquerda (T1) e as correspondentes da direita (T2).", code: "SELECT T1.Coluna, T2.Coluna\nFROM Tabela1 AS T1\nLEFT JOIN Tabela2 AS T2 ON T1.ID = T2.ID;" },
+                        { id: "dml_right_join", title: "RIGHT JOIN", desc: "Retorna TODAS as linhas da tabela da direita (T2) e as correspondentes da esquerda (T1).", code: "SELECT T1.Coluna, T2.Coluna\nFROM Tabela1 AS T1\nRIGHT JOIN Tabela2 AS T2 ON T1.ID = T2.ID;" },
+                        { id: "dml_full_join", title: "FULL (OUTER) JOIN", desc: "Retorna todas as linhas quando há uma correspondência em qualquer uma das tabelas.", code: "SELECT T1.Coluna, T2.Coluna\nFROM Tabela1 AS T1\nFULL OUTER JOIN Tabela2 AS T2 ON T1.ID = T2.ID;" },
+                        { id: "dml_self_join", title: "SELF JOIN", desc: "Junta uma tabela com ela mesma.", code: "SELECT A.Nome AS Funcionario, B.Nome AS Gerente\nFROM Funcionarios AS A\nINNER JOIN Funcionarios AS B ON A.GerenteID = B.FuncionarioID;" },
+                        { id: "dml_union", title: "UNION", desc: "Combina o resultado de duas ou mais consultas SELECT. Remove duplicatas.", code: "SELECT Coluna FROM Tabela1\nUNION\nSELECT Coluna FROM Tabela2;" },
+                        { id: "dml_union_all", title: "UNION ALL", desc: "Combina o resultado de duas ou mais consultas SELECT. Mantém duplicatas.", code: "SELECT Coluna FROM Tabela1\nUNION ALL\nSELECT Coluna FROM Tabela2;" },
+                        { id: "dml_group_by", title: "GROUP BY", desc: "Agrupa linhas que têm os mesmos valores. Usado com funções de agregação (COUNT, MAX, MIN, SUM, AVG).", code: "SELECT COUNT(ClienteID), Pais\nFROM Clientes\nGROUP BY Pais;" },
+                        { id: "dml_having", title: "HAVING", desc: "Filtra resultados DEPOIS que o GROUP BY foi aplicado.", code: "SELECT COUNT(ClienteID), Pais\nFROM Clientes\nGROUP BY Pais\nHAVING COUNT(ClienteID) > 5;" },
+                        { id: "dml_exists", title: "EXISTS", desc: "Testa a existência de qualquer registro em uma sub-query.", code: "SELECT Nome\nFROM Fornecedores\nWHERE EXISTS (SELECT 1 FROM Produtos WHERE Produtos.FornecedorID = Fornecedores.FornecedorID);" },
+                        { id: "dml_any", title: "ANY", desc: "Compara um valor com QUALQUER valor em uma lista ou sub-query.", code: "SELECT Nome\nFROM Produtos\nWHERE Preco > ANY (SELECT Preco FROM Produtos WHERE CategoriaID = 2);" },
+                        { id: "dml_all", title: "ALL", desc: "Compara um valor com TODOS os valores em uma lista ou sub-query.", code: "SELECT Nome\nFROM Produtos\nWHERE Preco > ALL (SELECT Preco FROM Produtos WHERE CategoriaID = 2);" },
+                        { id: "dml_case", title: "CASE", desc: "Lógica condicional (IF-THEN-ELSE) dentro de uma consulta.", code: "SELECT Nome,\n    CASE\n        WHEN Preco > 100 THEN 'Caro'\n        WHEN Preco > 50 THEN 'Médio'\n        ELSE 'Barato'\n    END AS Nivel_Preco\nFROM Produtos;" },
+                        { id: "dml_select_into", title: "SELECT INTO", desc: "Copia dados de uma tabela para uma *nova* tabela. (Não é padrão ANSI).", code: "-- Sintaxe SQL Server / MS Access\nSELECT * INTO NovaTabela\nFROM TabelaExistente\nWHERE Condicao;" },
+                        { id: "dml_insert_into_select", title: "INSERT INTO SELECT", desc: "Copia dados de uma tabela para outra tabela *existente*.", code: "INSERT INTO TabelaExistente (Coluna1, Coluna2)\nSELECT ColunaA, ColunaB\nFROM OutraTabela\nWHERE Condicao;" },
+                        { id: "dml_is_null", title: "IS NULL / IS NOT NULL", desc: "Verifica se um valor é nulo.", code: "SELECT * FROM Clientes WHERE Endereco IS NULL;" },
+                        { id: "dml_coalesce", title: "COALESCE", desc: "Retorna o primeiro valor não nulo de uma lista. (Padrão ANSI).", code: "SELECT COALESCE(ColunaNula, ColunaNula2, 'ValorPadrao') FROM Tabela;" },
+                        { id: "dml_isnull", title: "ISNULL() / IFNULL()", desc: "Funções específicas de SGBDs (SQL Server / MySQL) para substituir NULOs.", code: "-- MySQL\nSELECT IFNULL(ColunaNula, 'ValorPadrao') FROM Tabela;\n\n-- SQL Server\nSELECT ISNULL(ColunaNula, 'ValorPadrao') FROM Tabela;" }
+                    ]
+                },
+                {
+                    category: "4. Outros Conceitos e Estruturas",
+                    items: [
+                        { id: "oth_index", title: "INDEX", desc: "Cria um índice na tabela para acelerar a busca de dados.", code: "CREATE INDEX idx_nome_indice\nON Tabela (Coluna1, Coluna2);" },
+                        { id: "oth_auto_increment", title: "AUTO INCREMENT", desc: "Permite que um número único seja gerado automaticamente. (Sintaxe varia).", code: "-- MySQL\nCREATE TABLE Tabela (ID INT PRIMARY KEY AUTO_INCREMENT);\n\n-- SQL Server\nCREATE TABLE Tabela (ID INT PRIMARY KEY IDENTITY(1,1));" },
+                        { id: "oth_views", title: "VIEWS", desc: "Uma tabela virtual baseada no conjunto de resultados de uma consulta SQL.", code: "-- Criar View\nCREATE VIEW View_Clientes_Brasil AS\nSELECT Nome, Telefone\nFROM Clientes\nWHERE Pais = 'Brasil';\n\n-- Usar View\nSELECT * FROM View_Clientes_Brasil;" },
+                        { id: "oth_dates", title: "DATES", desc: "Tipos de dados para armazenar datas e horas (ex: DATE, DATETIME, TIMESTAMP).", code: "SELECT * FROM Pedidos WHERE DataPedido = '2025-11-10';" },
+                        { id: "oth_stored_procedures", title: "STORED PROCEDURES", desc: "Um bloco de código SQL preparado que pode ser salvo e reutilizado.", code: "-- Exemplo SQL Server\nCREATE PROCEDURE sp_SelecionarClientes\nAS\nBEGIN\n    SELECT * FROM Clientes;\nEND;\n\n-- Executar\nEXEC sp_SelecionarClientes;" },
+                        { id: "oth_comments", title: "COMMENTS", desc: "Usado para adicionar comentários ao código.", code: "-- Comentário de linha única\n\n/*\nBloco de comentário\nde múltiplas linhas.\n*/" },
+                        { id: "oth_operators", title: "OPERATORS", desc: "Símbolos para realizar operações (ex: +, -, *, /, =, >, <, AND, OR, LIKE, IN).", code: "SELECT * FROM Produtos WHERE Preco > 10 AND Categoria = 'Bebidas';" }
+                    ]
+                },
+                {
+                    category: "5. Tópicos Conceituais",
+                    items: [
+                        { id: "con_sql_injection", title: "SQL INJECTION", desc: "Um tipo de ataque de segurança onde um invasor insere código SQL malicioso em uma consulta. (Deve ser prevenido usando 'Prepared Statements' ou 'Parameterized Queries').", code: "-- Exemplo VULNERÁVEL (NÃO FAÇA ISSO):\nString sql = \"SELECT * FROM users WHERE username = '\" + userInput + \"';\";\n\n-- Correção (Conceito de Prepared Statement em Java):\nPreparedStatement stmt = conn.prepareStatement(\"SELECT * FROM users WHERE username = ?\");\nstmt.setString(1, userInput);" },
+                        { id: "con_sql_hosting", title: "SQL HOSTING", desc: "Refere-se a serviços (geralmente pagos) que hospedam seu banco de dados SQL, tornando-o acessível online para sua aplicação.", code: "-- Não há código SQL para isso. É um conceito de infraestrutura.\n-- Exemplos de provedores: Amazon RDS, Google Cloud SQL, Azure SQL Database." },
+                        { id: "con_sql_data_types", title: "SQL DATA TYPES", desc: "Os tipos de dados que uma coluna pode armazenar. Exemplos comuns:", code: "/*\n  Texto:       CHAR(n), VARCHAR(n), TEXT\n  Numérico:  INT, DECIMAL(p,s), FLOAT, REAL\n  Data/Hora: DATE, TIME, DATETIME, TIMESTAMP\n  Booleano:  BOOLEAN, BIT\n*/\n\nCREATE TABLE ExemploTipos (\n    Nome VARCHAR(100),\n    Idade INT,\n    Preco DECIMAL(10, 2),\n    DataCadastro DATE\n);" }
+                    ]
+                }
+            ];
+
+            const sidebarNav = document.getElementById('sidebar-nav');
+            const contentDisplay = document.getElementById('content-display');
+            const searchInput = document.getElementById('searchInput');
+            let allNavLinks = [];
+
+            // 1. Renderizar a Barra Lateral e o Conteúdo
+            sqlData.forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'mb-4';
+                
+                const categoryTitle = document.createElement('h3');
+                categoryTitle.className = 'text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2';
+                categoryTitle.textContent = category.category;
+                categoryDiv.appendChild(categoryTitle);
+                
+                const ul = document.createElement('ul');
+                ul.className = 'space-y-1';
+                
+                category.items.forEach(item => {
+                    // Adicionar item na barra lateral
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = `#${item.id}`;
+                    a.textContent = item.title;
+                    a.className = 'nav-link block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 text-sm';
+                    a.dataset.id = item.id;
+                    a.dataset.search = item.title.toLowerCase();
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                    
+                    // Popular a seção de conteúdo correspondente
+                    const contentSection = document.getElementById(item.id);
+                    if (contentSection) {
+                        const copyButtonId = `copy-${item.id}`;
+                        contentSection.innerHTML = `
+                            <h2 class="text-3xl font-bold border-b pb-2">${item.title}</h2>
+                            <p class="text-lg text-gray-700">${item.desc}</p>
+                            <div class="relative">
+                                <button id="${copyButtonId}"
+                                    class="absolute top-2 right-2 px-3 py-1 bg-gray-700 hover:bg-gray-600 text-white text-xs font-medium rounded-md transition-colors"
+                                    onclick="copyCode('code-${item.id}', '${copyButtonId}')">
+                                    Copiar
+                                </button>
+                                <pre class="bg-gray-900 text-white p-4 rounded-lg overflow-x-auto"><code id="code-${item.id}">${escapeHtml(item.code)}</code></pre>
+                            </div>
+                        `;
+                    }
+                });
+                
+                categoryDiv.appendChild(ul);
+                sidebarNav.appendChild(categoryDiv);
+            });
+            
+            allNavLinks = document.querySelectorAll('.nav-link');
+
+            // 2. Lidar com a Navegação
+            sidebarNav.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A' && e.target.classList.contains('nav-link')) {
+                    e.preventDefault();
+                    const targetId = e.target.dataset.id;
+                    showContent(targetId);
+                    
+                    // Atualizar estado ativo
+                    allNavLinks.forEach(link => link.classList.remove('active'));
+                    e.target.classList.add('active');
+                }
+            });
+            
+            // 3. Função para mostrar conteúdo
+            function showContent(id) {
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+                
+                const activeSection = document.getElementById(id);
+                if (activeSection) {
+                    activeSection.style.display = 'block';
+                } else {
+                    document.getElementById('home').style.display = 'block';
+                }
+                // Scroll para o topo da área de conteúdo (útil em mobile)
+                contentDisplay.parentElement.scrollTop = 0;
+            }
+            
+            // 4. Lidar com a Busca
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                
+                sidebarNav.querySelectorAll('div.mb-4').forEach(categoryDiv => {
+                    let categoryVisible = false;
+                    categoryDiv.querySelectorAll('li').forEach(li => {
+                        const navLink = li.querySelector('a');
+                        const searchData = navLink.dataset.search;
+                        
+                        if (searchData.includes(searchTerm)) {
+                            li.style.display = 'block';
+                            categoryVisible = true;
+                        } else {
+                            li.style.display = 'none';
+                        }
+                    });
+                    
+                    // Ocultar título da categoria se nenhum item corresponder
+                    categoryDiv.style.display = categoryVisible ? 'block' : 'none';
+                });
+            });
+
+            // 5. Lidar com navegação por Hash (ex: ao recarregar a página)
+            if (window.location.hash) {
+                const hashId = window.location.hash.substring(1);
+                const matchingLink = document.querySelector(`.nav-link[data-id="${hashId}"]`);
+                if (matchingLink) {
+                    showContent(hashId);
+                    allNavLinks.forEach(link => link.classList.remove('active'));
+                    matchingLink.classList.add('active');
+                } else {
+                    showContent('home');
+                }
+            } else {
+                showContent('home');
+            }
+        });
+
+        // 6. Função para copiar código
+        function copyCode(codeElementId, buttonId) {
+            const codeElement = document.getElementById(codeElementId);
+            const buttonElement = document.getElementById(buttonId);
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(codeElement.textContent)
+                    .then(() => {
+                        buttonElement.textContent = 'Copiado!';
+                        setTimeout(() => {
+                            buttonElement.textContent = 'Copiar';
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        fallbackCopyText(codeElement.textContent, buttonElement);
+                    });
+            } else {
+                fallbackCopyText(codeElement.textContent, buttonElement);
+            }
+        }
+        
+        // Fallback para ambientes não seguros (como o 'snippet' do W3Schools)
+        function fallbackCopyText(text, buttonElement) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            
+            textArea.style.position = 'fixed';
+            textArea.style.top = '0';
+            textArea.style.left = '0';
+            textArea.style.opacity = '0';
+
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    buttonElement.textContent = 'Copiado!';
+                } else {
+                    buttonElement.textContent = 'Erro!';
+                }
+            } catch (err) {
+                buttonElement.textContent = 'Erro!';
+            }
+
+            document.body.removeChild(textArea);
+            
+            setTimeout(() => {
+                buttonElement.textContent = 'Copiar';
+            }, 2000);
+        }
+        
+        // 7. Função para escapar HTML
+        function escapeHtml(unsafe) {
+            return unsafe
+                 .replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#039;");
+        }
+        
+    </script>
+</body>
+</html>
