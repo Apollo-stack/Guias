@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Web Interativo: HTML, CSS & JS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: A single-page application with a fixed top navigation bar for smooth scrolling to three distinct sections: HTML, CSS, and JavaScript. This structure was chosen because it mirrors the logical learning progression (structure, style, behavior) presented in the source guide. It allows for both linear reading and quick, easy access to specific topics, which is ideal for a reference tool. An interactive demo is included in the JS section to provide a practical, hands-on learning experience. -->
+    <!-- Visualization & Content Choices: The guide's content is informational and code-based, not data-driven, so traditional charts are unsuitable. Instead, information is presented using styled tables and code blocks for clarity. The key 'visualizations' are interactive demos: 1) A CSS slider to demonstrate the 'border-radius' property in real-time, making the concept tangible. 2) A live implementation of the guide's JavaScript example, allowing users to click a button and see DOM manipulation happen. This direct interaction is the most effective way to teach behavior. All elements are built with HTML/CSS/JS, confirming no SVG/Mermaid is used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+        code {
+            background-color: #f1f5f9;
+            padding: 0.125rem 0.25rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre > code {
+            display: block;
+            padding: 1rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        th {
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-slate-800">
+
+    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-slate-900">Guia Web Interativo</h1>
+            <div class="space-x-4 md:space-x-8">
+                <a href="#html" class="text-slate-600 hover:text-blue-600 transition-colors">HTML</a>
+                <a href="#css" class="text-slate-600 hover:text-blue-600 transition-colors">CSS</a>
+                <a href="#js" class="text-slate-600 hover:text-blue-600 transition-colors">JavaScript</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-6 md:p-8">
+        <section class="text-center py-16">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 text-slate-900">Seu Guia Rápido para o Desenvolvimento Web</h2>
+            <p class="text-lg text-slate-600 max-w-3xl mx-auto">
+                Explore os pilares da web: a estrutura com HTML, o estilo com CSS e a interatividade com JavaScript. Use a navegação para pular para uma seção ou simplesmente role para baixo.
+            </p>
+        </section>
+
+        <div class="space-y-12">
+            <section id="html" class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <h3 class="text-3xl font-bold mb-6 border-b pb-4 text-slate-900">1. HTML (HyperText Markup Language)</h3>
+                <p class="mb-6 text-slate-700">
+                    É a linguagem de <strong>estrutura</strong>. Pense nela como o "esqueleto" da sua página. Ela define e organiza todo o conteúdo que você vê.
+                </p>
+
+                <h4 class="text-2xl font-semibold mb-3 text-slate-800">Estrutura Básica de um Arquivo HTML</h4>
+                <p class="mb-4 text-slate-700">Todo arquivo `.html` segue esta estrutura fundamental para ser interpretado corretamente pelos navegadores.</p>
+                <pre><code class="language-html">&lt;!DOCTYPE html&gt; &lt;!-- Define a versão do HTML --&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;!-- Metadados da página (não visíveis) --&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Título da Página&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;!-- Conteúdo visível da página --&gt;
+    &lt;h1&gt;Este é um cabeçalho principal&lt;/h1&gt;
+    &lt;p&gt;Este é um parágrafo de texto.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+                <h4 class="text-2xl font-semibold mt-8 mb-4 text-slate-800">Tags Mais Comuns</h4>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="w-1/4">Tag</th>
+                                <th class="w-1/2">Descrição</th>
+                                <th class="w-1/4">Exemplo de Uso</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>&lt;h1&gt;</code> a <code>&lt;h6&gt;</code></td><td>Títulos e subtítulos, sendo <code>&lt;h1&gt;</code> o mais importante.</td><td><code>&lt;h1&gt;Título&lt;/h1&gt;</code></td></tr>
+                            <tr><td><code>&lt;p&gt;</code></td><td>Parágrafo de texto.</td><td><code>&lt;p&gt;Olá, mundo!&lt;/p&gt;</code></td></tr>
+                            <tr><td><code>&lt;a&gt;</code></td><td>Link (âncora) para outra página ou recurso.</td><td><code>&lt;a href="#"&gt;Link&lt;/a&gt;</code></td></tr>
+                            <tr><td><code>&lt;img&gt;</code></td><td>Exibe uma imagem.</td><td><code>&lt;img src="..." alt="..."&gt;</code></td></tr>
+                            <tr><td><code>&lt;div&gt;</code></td><td>Divisor ou contêiner genérico para agrupar elementos.</td><td><code>&lt;div&gt;...&lt;/div&gt;</code></td></tr>
+                            <tr><td><code>&lt;span&gt;</code></td><td>Contêiner para pequenos trechos de texto.</td><td><code>&lt;span&gt;...&lt;/span&gt;</code></td></tr>
+                            <tr><td><code>&lt;ul&gt;</code>, <code>&lt;ol&gt;</code>, <code>&lt;li&gt;</code></td><td>Listas não ordenadas (ul) e ordenadas (ol). <code>li</code> é o item.</td><td><code>&lt;ul&gt;&lt;li&gt;Item&lt;/li&gt;&lt;/ul&gt;</code></td></tr>
+                            <tr><td><code>&lt;button&gt;</code></td><td>Botão clicável.</td><td><code>&lt;button&gt;Clique&lt;/button&gt;</code></td></tr>
+                            <tr><td><code>&lt;input&gt;</code></td><td>Campo de entrada de dados (texto, número, etc.).</td><td><code>&lt;input type="text"&gt;</code></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="css" class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <h3 class="text-3xl font-bold mb-6 border-b pb-4 text-slate-900">2. CSS (Cascading Style Sheets)</h3>
+                <p class="mb-6 text-slate-700">
+                    É a linguagem de <strong>estilo</strong>. Pense nela como a "roupa" da sua página. Ela controla a aparência, as cores, fontes e o layout.
+                </p>
+
+                <h4 class="text-2xl font-semibold mb-3 text-slate-800">Propriedades Mais Usadas</h4>
+                <p class="mb-4 text-slate-700">Aqui estão algumas das propriedades CSS mais comuns que você usará para estilizar seus elementos HTML.</p>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="w-1/4">Propriedade</th>
+                                <th class="w-1/2">Descrição</th>
+                                <th class="w-1/4">Exemplo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                             <tr><td><code>color</code></td><td>Define a cor do texto.</td><td><code>color: #333333;</code></td></tr>
+                             <tr><td><code>background-color</code></td><td>Define a cor de fundo.</td><td><code>background-color: #f0f0f0;</code></td></tr>
+                             <tr><td><code>font-size</code></td><td>Define o tamanho do texto.</td><td><code>font-size: 16px;</code></td></tr>
+                             <tr><td><code>margin</code></td><td>Espaçamento <strong>fora</strong> da borda do elemento.</td><td><code>margin: 10px;</code></td></tr>
+                             <tr><td><code>padding</code></td><td>Espaçamento <strong>dentro</strong> da borda do elemento.</td><td><code>padding: 20px;</code></td></tr>
+                             <tr><td><code>border-radius</code></td><td>Arredonda os cantos de um elemento.</td><td><code>border-radius: 8px;</code></td></tr>
+                             <tr><td><code>display</code></td><td>Define como um elemento se comporta no layout.</td><td><code>display: flex;</code></td></tr>
+                             <tr><td><code>position</code></td><td>Define o método de posicionamento.</td><td><code>position: relative;</code></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4 class="text-2xl font-semibold mt-8 mb-4 text-slate-800">Demonstração Interativa: <code>border-radius</code></h4>
+                <div class="bg-slate-50 p-6 rounded-lg flex flex-col md:flex-row items-center gap-6">
+                    <div id="borderRadiusBox" class="w-32 h-32 bg-blue-500 transition-all duration-200" style="border-radius: 10%;"></div>
+                    <div class="flex-1 w-full">
+                        <label for="borderRadiusSlider" class="block mb-2 font-medium text-slate-700">Arraste para mudar o arredondamento:</label>
+                        <input id="borderRadiusSlider" type="range" min="0" max="50" value="10" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                        <p class="text-center mt-2 text-slate-600">border-radius: <span id="borderRadiusValue">10</span>%</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="js" class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <h3 class="text-3xl font-bold mb-6 border-b pb-4 text-slate-900">3. JavaScript</h3>
+                <p class="mb-6 text-slate-700">
+                    É a linguagem de <strong>comportamento</strong>. Pense nela como o "cérebro" da sua página. Ela adiciona interatividade e responde a ações do usuário.
+                </p>
+
+                <h4 class="text-2xl font-semibold mb-3 text-slate-800">Conceitos Fundamentais</h4>
+                 <div class="table-container mb-8">
+                    <table>
+                        <thead><tr><th>Conceito</th><th>Descrição</th><th>Exemplo</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Variáveis</strong></td><td>Armazenam dados que podem ser usados e modificados.</td><td><code>let nome = "Maria";</code></td></tr>
+                            <tr><td><strong>Funções</strong></td><td>Blocos de código reutilizáveis que executam uma tarefa.</td><td><code>function saudar() { ... }</code></td></tr>
+                            <tr><td><strong>Eventos</strong></td><td>Ações na página (clique, passar o mouse, etc.).</td><td><code>elem.addEventListener('click', ...)</code></td></tr>
+                            <tr><td><strong>Manipulação do DOM</strong></td><td>Acessar e modificar elementos HTML e CSS.</td><td><code>document.getElementById(...)</code></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4 class="text-2xl font-semibold mt-8 mb-4 text-slate-800">Exemplo Prático de Interação (Ao Vivo)</h4>
+                <p class="mb-4 text-slate-700">Este é um exemplo funcional. O código JavaScript abaixo está controlando os elementos HTML. Clique no botão para ver a mágica acontecer!</p>
+                
+                <div class="bg-slate-50 p-6 rounded-lg">
+                    <div class="text-center mb-6">
+                        <h1 id="titulo-principal" class="text-3xl font-bold text-slate-800 transition-colors duration-300">Título Original</h1>
+                        <button id="meu-botao" class="mt-4 bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 transition-colors shadow">Mudar Título</button>
+                    </div>
+
+                    <h5 class="text-lg font-semibold mb-2">Código HTML:</h5>
+                    <pre><code class="language-html">&lt;h1 id="titulo-principal"&gt;Título Original&lt;/h1&gt;
+&lt;button id="meu-botao"&gt;Mudar Título&lt;/button&gt;</code></pre>
+                    
+                    <h5 class="text-lg font-semibold mt-4 mb-2">Código JavaScript:</h5>
+                    <pre><code class="language-javascript">// 1. Seleciona os elementos HTML
+const titulo = document.getElementById('titulo-principal');
+const botao = document.getElementById('meu-botao');
+
+// 2. Cria uma função que será executada no clique
+function mudarTitulo() {
+  titulo.textContent = "Título Alterado!";
+  titulo.style.color = 'rgb(34 197 94)'; // Verde
+}
+
+// 3. Adiciona um "ouvinte de evento" ao botão
+botao.addEventListener('click', mudarTitulo);</code></pre>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <footer class="text-center py-8 mt-12 border-t">
+        <p class="text-slate-500">Guia interativo criado para facilitar seus estudos.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lógica para a demonstração do CSS
+            const slider = document.getElementById('borderRadiusSlider');
+            const box = document.getElementById('borderRadiusBox');
+            const valueDisplay = document.getElementById('borderRadiusValue');
+
+            slider.addEventListener('input', (e) => {
+                const value = e.target.value;
+                box.style.borderRadius = `${value}%`;
+                valueDisplay.textContent = value;
+            });
+
+            // Lógica para o exemplo prático de JavaScript
+            const titulo = document.getElementById('titulo-principal');
+            const botao = document.getElementById('meu-botao');
+            
+            let original = true;
+            const originalText = 'Título Original';
+            const originalColor = 'rgb(30 41 59)';
+            const changedText = "Título Alterado!";
+            const changedColor = 'rgb(29 78 216)';
+
+            function mudarTitulo() {
+                if(original) {
+                    titulo.textContent = changedText;
+                    titulo.style.color = changedColor;
+                    botao.textContent = "Voltar ao Original";
+                } else {
+                    titulo.textContent = originalText;
+                    titulo.style.color = originalColor;
+                    botao.textContent = "Mudar Título";
+                }
+                original = !original;
+            }
+
+            botao.addEventListener('click', mudarTitulo);
+        });
+    </script>
+
+</body>
+</html>
