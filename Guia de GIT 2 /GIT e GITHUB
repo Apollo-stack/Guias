@@ -1,0 +1,401 @@
+<!-- Chosen Palette: Custom - "Modern Tech Blue" (#F8F9FA, #DEE2E6, #495057, #0D6EFD, #0A58CA) -->
+<!-- Application Structure Plan: The application is structured as a tabbed SPA with a sticky navigation bar for usability. This design was chosen to break down the dense information of the guide into four manageable, thematic sections: "Visão Geral" (high-level comparison), "Conceitos" (interactive diagrams for core mechanics), "Guia Prático" (step-by-step workflow simulation), and "Boas Práticas" (data visualizations). This non-linear, organized structure allows users to either follow a logical learning path or jump directly to the information they need, which is more effective for both beginners and those looking for a refresher than a simple linear document. -->
+<!-- Visualization & Content Choices: 
+- Report Info: Git vs. GitHub definitions. -> Goal: Compare -> Viz/Presentation: Side-by-side comparison cards. -> Interaction: None. -> Justification: Clearly delineates the two tools. -> Library/Method: HTML/Tailwind.
+- Report Info: Git's 3-area workflow. -> Goal: Organize/Process -> Viz/Presentation: Interactive diagram with clickable areas. -> Interaction: Click on each area to display detailed explanations and associated commands. -> Justification: Makes an abstract process tangible and easier to remember. -> Library/Method: HTML/CSS/JS.
+- Report Info: Branching and Pull Request flow. -> Goal: Organize/Process -> Viz/Presentation: Interactive step-by-step diagram. -> Interaction: Buttons to progress through the flow (create branch, commit, push, PR, merge), updating the visual state at each step. -> Justification: Demystifies the most critical collaborative workflow in Git. -> Library/Method: HTML/CSS/JS.
+- Report Info: Best practice for commit size. -> Goal: Compare -> Viz/Presentation: Bar chart. -> Interaction: Hover for details. -> Justification: Visually quantifies the benefit of atomic commits over monolithic ones. -> Library/Method: Chart.js (Canvas).
+- Report Info: Best practice for branch usage. -> Goal: Inform -> Viz/Presentation: Donut chart. -> Interaction: Hover for details. -> Justification: Provides a quick, impactful visual reinforcing that development should happen in branches. -> Library/Method: Chart.js (Canvas).
+- Report Info: Code commands. -> Goal: Inform/Action -> Viz/Presentation: Code blocks. -> Interaction: Click-to-copy button. -> Justification: Improves usability by making commands easy to use. -> Library/Method: HTML/JS. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicação Interativa: Guia de Git e GitHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
+            color: #212529;
+        }
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-link.active {
+            color: #0D6EFD;
+            border-bottom-color: #0D6EFD;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        .code-block {
+            position: relative;
+        }
+        .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #6C757D;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .copy-button:hover {
+            background-color: #495057;
+        }
+        .interactive-diagram-area {
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            border-width: 2px;
+            border-style: dashed;
+        }
+        .interactive-diagram-area.active {
+            background-color: #E7F1FF;
+            border-color: #0D6EFD;
+            border-style: solid;
+        }
+    </style>
+</head>
+<body data-bs-spy="scroll" data-bs-target="#navbar-main">
+
+    <header class="text-center py-8 bg-white border-b">
+        <h1 class="text-4xl md:text-5xl font-bold text-[#212529] mb-2">Guia Interativo de Git & GitHub</h1>
+        <p class="text-lg text-gray-600">Explore, interaja e domine o controle de versão.</p>
+    </header>
+
+    <nav id="navbar-main" class="sticky top-0 bg-white/80 backdrop-blur-sm shadow-sm z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-center items-center space-x-4 md:space-x-8">
+                <a href="#visao-geral" class="nav-link py-4 text-gray-600 font-semibold border-b-2 border-transparent hover:text-blue-600">Visão Geral</a>
+                <a href="#conceitos" class="nav-link py-4 text-gray-600 font-semibold border-b-2 border-transparent hover:text-blue-600">Conceitos</a>
+                <a href="#guia-pratico" class="nav-link py-4 text-gray-600 font-semibold border-b-2 border-transparent hover:text-blue-600">Guia Prático</a>
+                <a href="#boas-praticas" class="nav-link py-4 text-gray-600 font-semibold border-b-2 border-transparent hover:text-blue-600">Boas Práticas</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-4 md:p-8">
+        
+        <section id="visao-geral" class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">Visão Geral: A Dupla Dinâmica</h2>
+                <p class="mt-2 text-gray-700 max-w-2xl mx-auto">Git é a ferramenta, GitHub é a plataforma. Compreender a distinção entre eles é o primeiro passo para um controle de versão eficaz e colaborativo.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col">
+                    <h3 class="text-2xl font-bold mb-3 text-center">Git: O Sistema de Controle</h3>
+                    <p class="text-gray-600 text-center mb-4 flex-grow">O motor que roda na sua máquina, rastreando cada alteração e gerenciando o histórico do seu projeto.</p>
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <p class="font-semibold">Analogia:</p>
+                        <p>O software que gerencia o histórico de um documento no seu computador.</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col">
+                    <h3 class="text-2xl font-bold mb-3 text-center">GitHub: A Plataforma de Colaboração</h3>
+                    <p class="text-gray-600 text-center mb-4 flex-grow">O serviço na nuvem que hospeda seus projetos Git, permitindo que você trabalhe em equipe, revise código e mostre seu portfólio.</p>
+                     <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <p class="font-semibold">Analogia:</p>
+                        <p>O "Google Drive" para o seu código, onde você compartilha e colabora.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="conceitos" class="py-16 bg-white rounded-lg shadow-lg my-8 p-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">Conceitos Fundamentais</h2>
+                <p class="mt-2 text-gray-700 max-w-2xl mx-auto">Para usar o Git, você precisa entender seu fluxo de trabalho principal. Interaja com o diagrama abaixo para ver como suas alterações se movem de uma simples edição para um ponto salvo no histórico.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center text-center font-semibold">
+                <div id="wd-area" class="interactive-diagram-area p-6 rounded-lg border-gray-300 h-32 flex items-center justify-center active">Working Directory</div>
+                <div class="text-3xl text-gray-400 font-light">→</div>
+                <div id="sa-area" class="interactive-diagram-area p-6 rounded-lg border-gray-300 h-32 flex items-center justify-center">Staging Area</div>
+                <div class="text-3xl text-gray-400 font-light hidden md:block">→</div>
+                <div class="text-3xl text-gray-400 font-light md:hidden col-span-3 text-center my-4">↓</div>
+                <div id="repo-area" class="interactive-diagram-area p-6 rounded-lg border-gray-300 h-32 flex items-center justify-center md:col-auto col-span-3">Repository (.git)</div>
+            </div>
+            
+            <div id="explanation-box" class="mt-8 p-6 bg-gray-50 rounded-lg transition-opacity duration-300 min-h-[150px]">
+                 <div id="wd-text" class="explanation-text">
+                    <h4 class="font-bold text-lg mb-2">1. Working Directory</h4>
+                    <p class="text-gray-700">Esta é a sua pasta de projeto atual, com todos os seus arquivos. Qualquer alteração que você faz—criar, editar ou deletar um arquivo—acontece aqui. O Git já sabe que essas mudanças ocorreram, mas elas ainda não estão preparadas para serem salvas.</p>
+                </div>
+                 <div id="sa-text" class="explanation-text hidden">
+                    <h4 class="font-bold text-lg mb-2">2. Staging Area (Index)</h4>
+                    <p class="text-gray-700">Esta é uma área de preparação. Antes de salvar, você precisa dizer ao Git exatamente quais alterações do Working Directory quer incluir no próximo "snapshot". Você faz isso com o comando <code class="bg-gray-200 rounded px-1">git add</code>. Isso lhe dá controle total sobre o que é salvo.</p>
+                </div>
+                 <div id="repo-text" class="explanation-text hidden">
+                    <h4 class="font-bold text-lg mb-2">3. Repository (.git)</h4>
+                    <p class="text-gray-700">O repositório é onde o Git armazena permanentemente o histórico do seu projeto. Uma vez que você preparou suas alterações na Staging Area, você as salva em um "commit" com o comando <code class="bg-gray-200 rounded px-1">git commit</code>. Cada commit é um ponto seguro no tempo para o qual você pode retornar.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="guia-pratico" class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">Guia Prático: Do Local ao Remoto</h2>
+                <p class="mt-2 text-gray-700 max-w-2xl mx-auto">Vamos simular o fluxo de trabalho mais comum, desde a criação de uma nova funcionalidade em uma branch até a sua integração no projeto principal.</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold">Simulador de Fluxo de Branch</h3>
+                    <div id="current-step" class="font-mono text-sm bg-gray-100 rounded-full px-3 py-1">Passo 0: Início</div>
+                </div>
+
+                <div id="branch-diagram" class="relative h-24 mb-6 transition-all duration-500">
+                    <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-300 rounded-full"></div>
+                    <div id="main-branch" class="absolute top-1/2 left-0 h-1 bg-blue-500 rounded-full transition-all duration-500" style="width: 10%;"></div>
+                    <div id="feature-branch" class="absolute top-1/4 left-[10%] h-1 bg-green-500 rounded-full transition-all duration-500 opacity-0" style="width: 0%;"></div>
+                    <div id="main-label" class="absolute top-full left-[5%] text-sm text-blue-600">main</div>
+                    <div id="feature-label" class="absolute bottom-full left-[15%] text-sm text-green-600 opacity-0 transition-opacity duration-500">feature</div>
+                </div>
+                
+                <p id="step-explanation" class="text-center text-gray-600 min-h-[40px] mb-6">O projeto existe com um histórico inicial na branch `main`.</p>
+
+                <div class="flex justify-center space-x-2">
+                    <button id="step-btn-1" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">1. Criar Branch</button>
+                    <button id="step-btn-2" class="px-4 py-2 bg-gray-400 text-white rounded-lg cursor-not-allowed" disabled>2. Commit & Push</button>
+                    <button id="step-btn-3" class="px-4 py-2 bg-gray-400 text-white rounded-lg cursor-not-allowed" disabled>3. Pull Request</button>
+                    <button id="step-btn-4" class="px-4 py-2 bg-gray-400 text-white rounded-lg cursor-not-allowed" disabled>4. Merge</button>
+                    <button id="reset-btn" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="boas-praticas" class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">Visualizando as Boas Práticas</h2>
+                <p class="mt-2 text-gray-700 max-w-2xl mx-auto">Bons hábitos mantêm seu histórico de projeto limpo e a colaboração eficiente. Os gráficos abaixo ilustram dois dos conceitos mais importantes.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold mb-2 text-center">Tamanho dos Commits</h3>
+                    <p class="text-center text-sm text-gray-600 mb-4">Um commit deve focar em uma única tarefa. Isso torna o histórico mais claro e facilita a reversão de mudanças específicas. Veja a diferença no esforço para entender um commit monolítico vs. vários commits atômicos.</p>
+                    <div class="chart-container">
+                        <canvas id="commitsChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold mb-2 text-center">Onde o Trabalho Acontece?</h3>
+                    <p class="text-center text-sm text-gray-600 mb-4">A branch `main` deve ser sempre estável. Quase todo o desenvolvimento de novas funcionalidades e correções deve ocorrer em branches separadas para garantir a integridade da versão principal.</p>
+                    <div class="chart-container">
+                        <canvas id="branchesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center mt-8 border-t py-8 bg-white">
+        <p class="text-gray-600">Uma aplicação interativa baseada no "Guia Completo de Git e GitHub".</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation scroll highlighting
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            window.onscroll = () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            };
+
+            // Interactive Concepts Diagram
+            const areas = {
+                wd: { area: document.getElementById('wd-area'), text: document.getElementById('wd-text') },
+                sa: { area: document.getElementById('sa-area'), text: document.getElementById('sa-text') },
+                repo: { area: document.getElementById('repo-area'), text: document.getElementById('repo-text') }
+            };
+
+            Object.keys(areas).forEach(key => {
+                areas[key].area.addEventListener('click', () => {
+                    Object.values(areas).forEach(val => {
+                        val.area.classList.remove('active');
+                        val.text.classList.add('hidden');
+                    });
+                    areas[key].area.classList.add('active');
+                    areas[key].text.classList.remove('hidden');
+                });
+            });
+
+            // Branching Simulator
+            const stepState = {
+                current: 0,
+                elements: {
+                    stepDisplay: document.getElementById('current-step'),
+                    explanation: document.getElementById('step-explanation'),
+                    mainBranch: document.getElementById('main-branch'),
+                    featureBranch: document.getElementById('feature-branch'),
+                    featureLabel: document.getElementById('feature-label'),
+                    buttons: [
+                        document.getElementById('step-btn-1'),
+                        document.getElementById('step-btn-2'),
+                        document.getElementById('step-btn-3'),
+                        document.getElementById('step-btn-4'),
+                    ],
+                    resetBtn: document.getElementById('reset-btn')
+                },
+                descriptions: [
+                    "O projeto existe com um histórico inicial na branch `main`.",
+                    "Uma nova branch (`feature`) é criada a partir da `main` para trabalhar em uma nova funcionalidade de forma isolada.",
+                    "Você faz commits na sua `feature` branch e envia (`push`) para o repositório remoto no GitHub.",
+                    "Você abre um Pull Request (PR) no GitHub. Isso inicia uma discussão para que sua equipe revise o código.",
+                    "Após a aprovação, o PR é 'merged'. Suas alterações da `feature` branch são integradas de volta à `main`."
+                ]
+            };
+
+            function updateStepUI() {
+                const { current, elements, descriptions } = stepState;
+                elements.stepDisplay.textContent = `Passo ${current}: ${elements.buttons[current-1]?.textContent.split('. ')[1] || 'Início'}`;
+                elements.explanation.textContent = descriptions[current];
+                
+                elements.buttons.forEach((btn, index) => {
+                    if (index === current) {
+                        btn.disabled = false;
+                        btn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                        btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    } else {
+                        btn.disabled = true;
+                        btn.classList.add('bg-gray-400', 'cursor-not-allowed');
+                        btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                    }
+                });
+
+                // Update diagram based on step
+                switch(current) {
+                    case 1: // Create branch
+                        elements.featureBranch.style.opacity = '1';
+                        elements.featureLabel.style.opacity = '1';
+                        break;
+                    case 2: // Commit & Push
+                        elements.featureBranch.style.width = '70%';
+                        break;
+                    case 3: // Pull Request
+                        elements.featureBranch.classList.add('animate-pulse');
+                        elements.mainBranch.classList.add('animate-pulse');
+                        break;
+                    case 4: // Merge
+                        elements.featureBranch.style.opacity = '0';
+                        elements.featureLabel.style.opacity = '0';
+                        elements.mainBranch.style.width = '90%';
+                        elements.featureBranch.classList.remove('animate-pulse');
+                        elements.mainBranch.classList.remove('animate-pulse');
+                        break;
+                    default: // Reset
+                        elements.mainBranch.style.width = '10%';
+                        elements.featureBranch.style.width = '0%';
+                        elements.featureBranch.style.opacity = '0';
+                        elements.featureLabel.style.opacity = '0';
+                        elements.featureBranch.classList.remove('animate-pulse');
+                        elements.mainBranch.classList.remove('animate-pulse');
+                }
+            }
+            
+            stepState.elements.buttons.forEach((btn, index) => {
+                btn.addEventListener('click', () => {
+                    stepState.current = index + 1;
+                    updateStepUI();
+                });
+            });
+
+            stepState.elements.resetBtn.addEventListener('click', () => {
+                stepState.current = 0;
+                updateStepUI();
+            });
+            
+            updateStepUI();
+
+
+            // Charts.js Instances
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) return label.join(' ');
+                return label;
+            };
+
+            const commitsCtx = document.getElementById('commitsChart').getContext('2d');
+            new Chart(commitsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Commit Monolítico', 'Commits Atômicos'],
+                    datasets: [{
+                        label: 'Esforço de Entendimento',
+                        data: [10, 3],
+                        backgroundColor: ['#DC3545', '#198754'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { title: tooltipTitleCallback } }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Nível de Esforço (Abstrato)' } }
+                    }
+                }
+            });
+
+            const branchesCtx = document.getElementById('branchesChart').getContext('2d');
+            new Chart(branchesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Desenvolvimento em Branches', 'Direto na `main` (Incorreto)'],
+                    datasets: [{
+                        data: [98, 2],
+                        backgroundColor: ['#0D6EFD', '#FFC107'],
+                        borderColor: '#F8F9FA',
+                        borderWidth: 4,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: { callbacks: { title: tooltipTitleCallback } }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
