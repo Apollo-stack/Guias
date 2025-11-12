@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia: Formatar e Instalar o Windows</title>
+    <!-- Chosen Palette: Calm Neutrals with Blue Accent -->
+    <!-- Application Structure Plan: A 4-step wizard (SPA) structure was chosen. The source is a dense, linear process. A wizard-style interface, showing only one "Fase" (Phase) at a time, is the most user-friendly structure. It manages cognitive load, prevents users from skipping critical steps, and guides them sequentially. Navigation is handled by a top stepper-nav and bottom "Anterior"/"Próxima" buttons. This structure directly maps to the report's 4 phases but makes the content digestible and action-oriented. -->
+    <!-- Visualization & Content Choices:
+        - Report Info: "FORMATAR APAGA TUDO!" (Warning) -> Goal: Warn -> Viz/Method: High-visibility alert box (HTML/Tailwind) -> Interaction: None (static) -> Justification: Must be the first and most unmissable element.
+        - Report Info: Fase 1 & 4 (Checklists) -> Goal: Inform/Organize -> Viz/Method: Interactive Accordion List (HTML/Tailwind/JS) -> Interaction: onClick to expand/collapse item details -> Justification: Converts "walls of text" into manageable, on-demand info chunks.
+        - Report Info: Fase 3 (Installation Steps) -> Goal: Guide Process Flow -> Viz/Method: Vertical Stepper/Timeline (HTML/Tailwind) -> Interaction: None (visual only), critical steps highlighted in color -> Justification: Visually represents the sequence, which is crucial for a complex procedure. More intuitive than a long numbered list.
+        - Report Info: Overall Process (4 Fases) -> Goal: Navigate -> Viz/Method: Stepper Nav (HTML/Tailwind) + JS -> Interaction: onClick to show/hide respective phase content blocks -> Justification: Core SPA navigation, isolates user focus to one step at a time.
+        - Libraries: Vanilla JS for all interactions. Chart.js is loaded but not used, as the source content is procedural, not quantitative; no chart would add value.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        .phase-content {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-header.active + .accordion-content {
+            max-height: 1000px;
+            transition: max-height 0.5s ease-in;
+        }
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+        .accordion-header.active .accordion-icon {
+            transform: rotate(90deg);
+        }
+        .step-connector {
+            width: 2px;
+            height: 100%;
+            left: 1.25rem;
+            transform: translateX(-50%);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl min-h-screen">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-blue-700">Guia Interativo de Formatação</h1>
+            <p class="text-lg text-gray-600">Um assistente passo a passo para formatar e reinstalar o Windows</p>
+        </header>
+
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-6 rounded-lg shadow-md mb-8" role="alert">
+            <h2 class="font-bold text-xl mb-2">⚠️ AVISO MAIS IMPORTANTE ⚠️</h2>
+            <p><strong>FORMATAR APAGA TUDO!</strong> Este processo irá <strong>apagar permanentemente</strong> todos os seus arquivos, programas e configurações da unidade principal (Disco C:). Não há como voltar atrás. Faça backup antes de prosseguir.</p>
+        </div>
+
+        <div class="bg-white p-6 md:p-8 rounded-lg shadow-xl">
+            
+            <nav class="flex border-b border-gray-200 mb-6">
+                <button data-phase="1" class="phase-nav-btn flex-1 py-4 px-2 text-center font-semibold text-blue-600 border-b-2 border-blue-600 transition-all duration-300">
+                    <span class="hidden md:inline">Fase 1:</span> Preparação
+                </button>
+                <button data-phase="2" class="phase-nav-btn flex-1 py-4 px-2 text-center font-semibold text-gray-400 border-b-2 border-transparent transition-all duration-300 hover:text-blue-500">
+                    <span class="hidden md:inline">Fase 2:</span> Criar Pendrive
+                </button>
+                <button data-phase="3" class="phase-nav-btn flex-1 py-4 px-2 text-center font-semibold text-gray-400 border-b-2 border-transparent transition-all duration-300 hover:text-blue-500">
+                    <span class="hidden md:inline">Fase 3:</span> Instalação
+                </button>
+                <button data-phase="4" class="phase-nav-btn flex-1 py-4 px-2 text-center font-semibold text-gray-400 border-b-2 border-transparent transition-all duration-300 hover:text-blue-500">
+                    <span class="hidden md:inline">Fase 4:</span> Pós-Instalação
+                </button>
+            </nav>
+
+            <main>
+                <section id="phase-1" class="phase-content">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-3">Fase 1: Preparação</h2>
+                    <p class="mb-6 text-gray-600">O sucesso da formatação depende de uma boa preparação. Complete esta lista de verificação antes de prosseguir. Clique em cada item para ver os detalhes.</p>
+                    <div class="space-y-4">
+                        
+                        <div class="accordion-item border rounded-lg overflow-hidden">
+                            <button class="accordion-header w-full flex justify-between items-center p-5 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <span class="font-semibold text-lg text-blue-700">1. Backup de Dados (Backup!)</span>
+                                <span class="accordion-icon text-blue-700 transform transition-transform duration-300">&#10148;</span>
+                            </button>
+                            <div class="accordion-content">
+                                <ul class="list-disc list-inside p-5 border-t border-gray-200 text-gray-700 space-y-2">
+                                    <li>Copie todos os seus arquivos pessoais (documentos, fotos, vídeos, músicas, saves de jogos) para um HD externo, SSD externo ou um serviço de nuvem (Google Drive, OneDrive, Dropbox).</li>
+                                    <li>Não se esqueça de arquivos na Área de Trabalho, pastas de Downloads e Documentos.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item border rounded-lg overflow-hidden">
+                            <button class="accordion-header w-full flex justify-between items-center p-5 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <span class="font-semibold text-lg text-blue-700">2. Chave do Produto (Product Key)</span>
+                                <span class="accordion-icon text-blue-700 transform transition-transform duration-300">&#10148;</span>
+                            </button>
+                            <div class="accordion-content">
+                                <ul class="list-disc list-inside p-5 border-t border-gray-200 text-gray-700 space-y-2">
+                                    <li><strong>PCs Modernos (Windows 10/11):</strong> Se o seu PC veio com o Windows 10 ou 11 de fábrica, a chave geralmente está atrelada ao hardware (licença digital) ou à sua conta Microsoft. O Windows deve reativar automaticamente após a instalação (desde que instale a mesma versão - Home ou Pro).</li>
+                                    <li><strong>PCs Antigos/Montados:</strong> Se você comprou o Windows separadamente, anote a sua chave de 25 dígitos.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item border rounded-lg overflow-hidden">
+                            <button class="accordion-header w-full flex justify-between items-center p-5 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <span class="font-semibold text-lg text-blue-700">3. Salvar Drivers Essenciais</span>
+                                <span class="accordion-icon text-blue-700 transform transition-transform duration-300">&#10148;</span>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="p-5 border-t border-gray-200 text-gray-700 space-y-3">
+                                    <p>Este é um passo crucial que muitos esquecem. Acesse o site da fabricante do seu PC (Dell, HP, Lenovo) ou da sua placa-mãe (ASUS, Gigabyte, MSI).</p>
+                                    <p>Baixe os seguintes drivers e salve-os no mesmo pendrive que usará para o backup (ou em um segundo pendrive):</p>
+                                    <ul class="list-disc list-inside space-y-2">
+                                        <li><strong>Driver de Rede/Wi-Fi (O MAIS IMPORTANTE):</strong> Sem ele, você não consegue acessar a internet para baixar os outros drivers.</li>
+                                        <li>Driver de Chipset.</li>
+                                        <li>(Opcional) Driver de Vídeo (NVIDIA, AMD, Intel).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item border rounded-lg overflow-hidden">
+                            <button class="accordion-header w-full flex justify-between items-center p-5 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <span class="font-semibold text-lg text-blue-700">4. Ferramenta de Mídia do Windows</span>
+                                <span class="accordion-icon text-blue-700 transform transition-transform duration-300">&#10148;</span>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="p-5 border-t border-gray-200 text-gray-700 space-y-3">
+                                    <p>Você precisará de um <strong>pendrive vazio de 8GB ou mais</strong>. (O processo apagará o conteúdo dele).</p>
+                                    <p>Em um computador funcional, acesse o site oficial da Microsoft:</p>
+                                    <ul class="list-disc list-inside space-y-2">
+                                        <li><strong>Para Windows 11:</strong> <a href="https://www.microsoft.com/pt-br/software-download/windows11" target="_blank" class="text-blue-600 hover:underline">Baixar o Windows 11</a></li>
+                                        <li><strong>Para Windows 10:</strong> <a href="https://www.microsoft.com/pt-br/software-download/windows10" target="_blank" class="text-blue-600 hover:underline">Baixar o Windows 10</a></li>
+                                    </ul>
+                                    <p>Procure pela opção "Criar mídia de instalação" (ou similar) e baixe a ferramenta (Media Creation Tool).</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section id="phase-2" class="phase-content hidden">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-3">Fase 2: Criar o Pendrive de Instalação (Bootável)</h2>
+                    <p class="mb-6 text-gray-600">Agora vamos usar a ferramenta da Microsoft para preparar seu pendrive. Este pendrive será usado para iniciar (dar "boot") no seu PC e instalar o Windows.</p>
+                    <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                        <li>Execute a "Media Creation Tool" que você baixou.</li>
+                        <li>Aceite os termos de licença.</li>
+                        <li>Selecione a opção: "Criar mídia de instalação (pendrive, DVD ou arquivo ISO) para outro computador".</li>
+                        <li>Desmarque a caixa "Usar as opções recomendadas para este computador" se quiser escolher um idioma ou arquitetura (64 bits é o padrão hoje).</li>
+                        <li>Selecione "Unidade flash USB" (o seu pendrive).</li>
+                        <li>Escolha o seu pendrive na lista.</li>
+                        <li>Aguarde. A ferramenta vai baixar o Windows e preparar o pendrive. Isso pode demorar.</li>
+                    </ol>
+                </section>
+
+                <section id="phase-3" class="phase-content hidden">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-3">Fase 3: Formatação e Instalação</h2>
+                    <p class="mb-6 text-gray-600">Esta é a parte principal. Siga os passos com atenção. O PC irá reiniciar várias vezes.</p>
+                    
+                    <div class="relative pl-10 space-y-6">
+                        <div class="absolute top-0 bottom-0 bg-gray-200 step-connector"></div>
+
+                        <div class="step relative">
+                            <div class="absolute -left-5 top-1.5 flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-full z-10 font-bold">1</div>
+                            <div class="ml-8 p-4 bg-gray-50 rounded-lg">
+                                <h3 class="font-semibold">Conecte o Pendrive</h3>
+                                <p class="text-sm text-gray-600">Com o PC desligado, conecte o pendrive bootável que você criou.</p>
+                            </div>
+                        </div>
+
+                        <div class="step relative">
+                            <div class="absolute -left-5 top-1.5 flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-full z-10 font-bold">2</div>
+                            <div class="ml-8 p-4 bg-gray-50 rounded-lg">
+                                <h3 class="font-semibold">Acesse a BIOS/UEFI</h3>
+                                <p class="text-sm text-gray-600">Ligue o PC e pressione <strong>imediatamente</strong> a tecla para entrar no menu de configuração (Setup). Teclas comuns: `DEL`, `F2`, `F10`, `F12` ou `ESC`.</p>
+                            </div>
+                        </div>
+
+                        <div class="step relative">
+                            <div class="absolute -left-5 top-1.5 flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-full z-10 font-bold">3</div>
+                            <div class="ml-8 p-4 bg-gray-50 rounded-lg">
+                                <h3 class="font-semibold">Mude a Ordem de Boot</h3>
+                                <p class="text-sm text-gray-600">Procure pela seção "Boot" e altere a "Ordem de Boot" (Boot Order) para que a "USB Drive" seja a <strong>primeira</strong> opção. Salve e saia (geralmente `F10`).</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step relative">
+                            <div class="absolute -left-5 top-1.5 flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-full z-10 font-bold">4-8</div>
+                            <div class="ml-8 p-4 bg-gray-50 rounded-lg">
+                                <h3 class="font-semibold">Início da Instalação</h3>
+                                <p class="text-sm text-gray-600">Siga as instruções na tela: escolha idioma, clique em "Instalar agora", insira a chave (ou "Não tenho a chave") e escolha sua versão do Windows (Home/Pro).</p>
+                            </div>
+                        </div>
+
+                        <div class="step relative">
+                            <div class="absolute -left-5 top-1.5 flex items-center justify-center w-10 h-10 bg-red-600 text-white rounded-full z-10 font-bold">9-10</div>
+                            <div class="ml-8 p-4 bg-red-100 border border-red-300 rounded-lg">
+                                <h3 class="font-semibold text-red-700">Tipo de Instalação (CRÍTICO)</h3>
+                                <p class="text-sm text-gray-700">Escolha: <strong>"Personalizada: Instalar apenas o Windows (Avançado)"</strong>.</p>
+                                <p class="text-sm text-gray-700 mt-2">Na tela de partições, identifique seu disco principal (Disco 0). Selecione <strong>cada partição</strong> do Windows antigo (Sistema, Reservado, Primário) e clique em <strong>"Excluir"</strong>. Faça isso até ter um grande "Espaço não alocado".</p>
+                            </div>
+                        </div>
+
+                        <div class="step relative">
+                            <div class="absolute -left-5 top-1.5 flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-full z-10 font-bold">11</div>
+                            <div class="ml-8 p-4 bg-gray-50 rounded-lg">
+                                <h3 class="font-semibold">Instalar</h3>
+                                <p class="text-sm text-gray-600">Selecione o "Espaço não alocado" e clique em "Avançar". O Windows começará a instalação.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step relative">
+                            <div class="absolute -left-5 top-1.5 flex items-center justify-center w-10 h-10 bg-yellow-500 text-white rounded-full z-10 font-bold">13</div>
+                            <div class="ml-8 p-4 bg-yellow-100 border border-yellow-300 rounded-lg">
+                                <h3 class="font-semibold text-yellow-800">!! IMPORTANTE !!</h3>
+                                <p class="text-sm text-gray-700">Quando o PC reiniciar pela primeira vez (após a cópia dos arquivos), <strong>remova o pendrive!</strong> Se não o fizer, a instalação pode recomeçar.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section id="phase-4" class="phase-content hidden">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-3">Fase 4: Pós-Instalação</h2>
+                    <p class="mb-6 text-gray-600">O Windows está instalado, mas o trabalho não acabou. Siga esta lista de verificação final. Clique em cada item para ver os detalhes.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="accordion-item border rounded-lg overflow-hidden">
+                            <button class="accordion-header w-full flex justify-between items-center p-5 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <span class="font-semibold text-lg text-blue-700">1. Configuração (OOBE)</span>
+                                <span class="accordion-icon text-blue-700 transform transition-transform duration-300">&#10148;</span>
+                            </button>
+                            <div class="accordion-content">
+                                <p class="p-5 border-t border-gray-200 text-gray-700">O Windows irá guiá-lo pela configuração inicial (país, teclado, conexão Wi-Fi, criação de conta de usuário ou login na conta Microsoft).</p>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item border rounded-lg overflow-hidden">
+                            <button class="accordion-header w-full flex justify-between items-center p-5 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <span class="font-semibold text-lg text-blue-700">2. Instale o Driver de Rede</span>
+                                <span class="accordion-icon text-blue-700 transform transition-transform duration-300">&#10148;</span>
+                            </button>
+                            <div class="accordion-content">
+                                <p class="p-5 border-t border-gray-200 text-gray-700">Se a internet (Wi-Fi ou Cabo) não funcionar, instale o driver que você salvou na Fase 1.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item border rounded-lg overflow-hidden">
+                            <button class="accordion-header w-full flex justify-between items-center p-5 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <span class="font-semibold text-lg text-blue-700">3. Windows Update (MUITO IMPORTANTE)</span>
+                                <span class="accordion-icon text-blue-700 transform transition-transform duration-300">&#10148;</span>
+                            </button>
+                            <div class="accordion-content">
+                                <p class="p-5 border-t border-gray-200 text-gray-700">Assim que tiver internet, vá em `Configurações > Atualização e Segurança` (Win 10) ou `Configurações > Windows Update` (Win 11). Clique em "Verificar se há atualizações" e instale <strong>TUDO</strong>. Repita o processo até estar atualizado.</p>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item border rounded-lg overflow-hidden">
+                            <button class="accordion-header w-full flex justify-between items-center p-5 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <span class="font-semibold text-lg text-blue-700">4. Instalar Drivers Restantes</span>
+                                <span class="accordion-icon text-blue-700 transform transition-transform duration-300">&#10148;</span>
+                            </button>
+                            <div class="accordion-content">
+                                <p class="p-5 border-t border-gray-200 text-gray-700">Instale os drivers de Chipset e Vídeo (GPU) que você baixou. Verifique o "Gerenciador de Dispositivos" por itens com exclamação amarela.</p>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item border rounded-lg overflow-hidden">
+                            <button class="accordion-header w-full flex justify-between items-center p-5 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <span class="font-semibold text-lg text-blue-700">5. Restaurar Backup</span>
+                                <span class="accordion-icon text-blue-700 transform transition-transform duration-300">&#10148;</span>
+                            </button>
+                            <div class="accordion-content">
+                                <p class="p-5 border-t border-gray-200 text-gray-700">Copie seus arquivos pessoais de volta para o computador.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item border rounded-lg overflow-hidden">
+                            <button class="accordion-header w-full flex justify-between items-center p-5 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <span class="font-semibold text-lg text-blue-700">6. Instalar Programas</span>
+                                <span class="accordion-icon text-blue-700 transform transition-transform duration-300">&#10148;</span>
+                            </button>
+                            <div class="accordion-content">
+                                <p class="p-5 border-t border-gray-200 text-gray-700">Instale seus programas essenciais (navegador, antivírus (se não for usar o Defender), Office, Steam, etc.).</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <footer class="mt-8 pt-6 border-t border-gray-200 flex justify-between items-center">
+                <button id="prev-btn" class="py-2 px-6 bg-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-400 transition-colors duration-300 invisible">
+                    Anterior
+                </button>
+                <button id="next-btn" class="py-2 px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                    Próxima Fase
+                </button>
+            </footer>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const phaseNavButtons = document.querySelectorAll('.phase-nav-btn');
+            const phaseContents = document.querySelectorAll('.phase-content');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            
+            let currentPhase = 1;
+            const totalPhases = 4;
+
+            function showPhase(phaseNum) {
+                currentPhase = phaseNum;
+
+                phaseContents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+                document.getElementById(`phase-${phaseNum}`).classList.remove('hidden');
+
+                phaseNavButtons.forEach(btn => {
+                    if (parseInt(btn.dataset.phase) === phaseNum) {
+                        btn.classList.add('text-blue-600', 'border-blue-600');
+                        btn.classList.remove('text-gray-400', 'border-transparent');
+                    } else {
+                        btn.classList.remove('text-blue-600', 'border-blue-600');
+                        btn.classList.add('text-gray-400', 'border-transparent');
+                    }
+                });
+
+                if (currentPhase === 1) {
+                    prevBtn.classList.add('invisible');
+                } else {
+                    prevBtn.classList.remove('invisible');
+                }
+
+                if (currentPhase === totalPhases) {
+                    nextBtn.textContent = 'Finalizar';
+                    nextBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                    nextBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                } else {
+                    nextBtn.textContent = 'Próxima Fase';
+                    nextBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    nextBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                }
+            }
+
+            phaseNavButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    showPhase(parseInt(btn.dataset.phase));
+                });
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentPhase > 1) {
+                    showPhase(currentPhase - 1);
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentPhase < totalPhases) {
+                    showPhase(currentPhase + 1);
+                } else {
+                    alert('Processo concluído! Seu computador está pronto.');
+                    showPhase(1);
+                }
+            });
+
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    header.classList.toggle('active');
+                });
+            });
+
+            showPhase(1);
+        });
+    </script>
+
+</body>
+</html>
